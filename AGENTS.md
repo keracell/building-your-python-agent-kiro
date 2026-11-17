@@ -15,12 +15,14 @@ Review only the lines changed in the diff, plus the minimum surrounding context 
 understand them. Check the following:
 
 **Style**
+
 - Follows PEP 8: naming, line length, import order, whitespace.
 - Functions and classes have clear names, type hints, and docstrings where behavior is not obvious.
 - No dead code, commented-out code, leftover debug prints, or unused imports and variables.
 - Tests are added or updated for changed behavior and follow the project's test conventions.
 
 **Security**
+
 - No hardcoded secrets, API keys, passwords, or tokens.
 - No SQL built with string concatenation or f-strings; parameterized queries are used.
 - No `eval`, `exec`, `pickle.loads`, `yaml.load` (unsafe), or `subprocess` with `shell=True` on untrusted input.
@@ -29,6 +31,7 @@ understand them. Check the following:
 - Dependencies added or changed are pinned and not known to be vulnerable.
 
 **Architecture**
+
 - Respects the layered structure (ADR-001): no layer skipping, no business logic in the
   presentation or data layers.
 - Configuration comes from the config layer, not hardcoded values (ADR-002).
