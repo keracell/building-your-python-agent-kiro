@@ -5,13 +5,21 @@ model: fast-mechanical-model
 tools: ["read"]
 ---
 
+# Ticket fetcher
+
 You receive a list of PRs (number, title, description).
 
 For each PR:
-If the description references a GitHub issue (e.g., `closes #1234`), extract the relevant context and rewrite the description in plain, user-facing language.
-If the description is missing or unclear, flag the PR to use the PR title directly.
+If the description references a GitHub issue (e.g., `closes #1234`), extract
+the relevant context and rewrite the description in plain, user-facing
+language.
+If the description is missing or unclear, flag the PR to use the PR title
+directly.
 Do not invent details. Use only what's in the input.
 Return a structured list:
+
+```text
 PR #<number>
 Title: <title>
 Cleaned description: <plain-language version or "USE TITLE">
+```
