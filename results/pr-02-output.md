@@ -20,6 +20,6 @@ Sub-agents run: style-reviewer, security-reviewer, architecture-reviewer
 - **Most serious issues:** `src/profile_service.py`.
 - **Assessment:** Needs fixes before merge.
 
-The security and architecture reviewers found nothing. The style reviewer reported the naming, type hint and docstring findings. The mutable default, the undefined `Profile` and the newline `[NIT]` were added during consolidation from the diff.
+The security and architecture reviewers found nothing. The style reviewer reported the naming, type hint and docstring findings. It noted the mutable default as a real bug that no skill rule covers. The mutable default, the undefined `Profile` and the newline `[NIT]` were added during consolidation from the diff. This run matches the earlier run of this review.
 
 This review is advice for the human reviewer. It is not an approval or rejection of the PR. Nothing has been posted to GitHub.

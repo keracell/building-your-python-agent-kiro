@@ -19,6 +19,6 @@ Sub-agents run: style-reviewer, security-reviewer, architecture-reviewer
 - **Most serious issues:** `tests/test_ride_history_service.py`.
 - **Assessment:** Minor issues only.
 
-The security and architecture reviewers found nothing. The service gets its data through an injected repository, which matches ADR-003 and ADR-004. The style reviewer reported only the `[MINOR]` finding. The two newline `[NIT]`s come from the diff markers and were added during consolidation.
+The security and architecture reviewers found nothing. The service gets its data through an injected repository, which matches ADR-003 and ADR-004. The style reviewer reported only the `[MINOR]` finding. The two newline `[NIT]`s come from the diff markers and were added during consolidation. This run matches the earlier runs of this review.
 
 This review is advice for the human reviewer. It is not an approval or rejection of the PR. Nothing has been posted to GitHub.
