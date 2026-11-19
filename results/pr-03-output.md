@@ -15,6 +15,6 @@ Sub-agents run: style-reviewer, security-reviewer, architecture-reviewer
 - **Most serious issues:** `src/payment_service.py`.
 - **Assessment:** Needs fixes before merge. Rotate the key now.
 
-The security and architecture reviewers both reported the hardcoded key as HIGH. It is merged here into one `[CRITICAL]` finding. The style reviewer found nothing. The newline `[NIT]` was added during consolidation from the diff. Apart from the key, the service follows the repository pattern (ADR-003) and constructor injection (ADR-004).
+The security reviewer reported the hardcoded key as HIGH, which maps to `[CRITICAL]`. The architecture reviewer reported the same line as HIGH under ADR-002. The two are merged into one finding. The style reviewer found nothing. The newline `[NIT]` was added during consolidation from the diff. Apart from the key, the service follows the repository pattern (ADR-003) and constructor injection (ADR-004). This run matches the earlier run of this review.
 
 This review is advice for the human reviewer. It is not an approval or rejection of the PR. Nothing has been posted to GitHub.
