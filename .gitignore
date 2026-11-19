@@ -4,3 +4,4 @@
 node_modules
 .env
 AGENTS-2.md
+tool-timer-state.jsonl
