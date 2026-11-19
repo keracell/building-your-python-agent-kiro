@@ -3,6 +3,8 @@ name: "pr-label-format"
 description: "PR label conventions for the development team — how to map PR labels and commit prefixes to user-facing release note categories. Load when processing PR lists for release notes."
 ---
 
+# PR label format
+
 ## Rules
 
 - Map `feat` or `type: feature` labels → Features section.
