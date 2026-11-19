@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Guard ADR writes",
+      "trigger": "PreToolUse",
+      "matcher": "write",
+      "action": {
+        "type": "command",
+        "command": "jq -e '.tool_input.path | test(\"docs/adr/\") | not'"
+      }
+    }
+  ]
+}
