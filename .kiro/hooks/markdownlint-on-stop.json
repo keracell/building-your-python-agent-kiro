@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Markdown lint on turn end",
+      "trigger": "Stop",
+      "description": "Runs markdownlint-cli2 on all Markdown files when the agent finishes a turn.",
+      "action": {
+        "type": "command",
+        "command": "npx --yes markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#.git\"",
+        "timeout": 120
+      }
+    }
+  ]
+}
