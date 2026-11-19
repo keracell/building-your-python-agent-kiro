@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Report operating system at session start",
+      "trigger": "SessionStart",
+      "description": "Briefs the agent with the operating system when a session starts.",
+      "action": {
+        "type": "command",
+        "command": "node .kiro/hooks/session-os.js"
+      }
+    }
+  ]
+}
