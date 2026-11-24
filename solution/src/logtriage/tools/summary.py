@@ -15,7 +15,7 @@ from ..logs import reader
 from ..logs.formats import LEVELS, UNKNOWN_FORMAT
 from ..logs.groups import group_id, pattern_of
 from ..logs.times import format_time, in_window, parse_instant
-from ..scans import LOCAL_CALLER, ScanStore
+from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore, ScannedFile, StoredGroup
 from ..models import ByLevel, Example, Group, MinLevel, SkippedFile, SummarizeResult
 
 DESCRIPTION = (
@@ -39,6 +39,7 @@ class _Group:
     last_seen: datetime | None = None
     files: set[str] = field(default_factory=set)
     example: Example | None = None
+    positions: list[tuple[str, int]] = field(default_factory=list)
 
 
 def parse_bound(name: str, value: str | None) -> datetime | None:
@@ -76,6 +77,7 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         first_seen = last_seen = None
         by_level = {level: 0 for level in LEVELS}
         groups: dict[tuple[str, str, str], _Group] = {}
+        scanned: dict[str, ScannedFile] = {}
 
         for full in reader.walk_files(location):
             relative = reader.relative_path(root, full)
@@ -85,6 +87,7 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
                     skipped.append(SkippedFile(path=relative, reason="unknown format"))
                 continue
             files_scanned += 1
+            scanned[relative] = ScannedFile(full, format_name)
             for line in reader.read_lines(full, format_name):
                 lines_scanned += 1
                 if not in_window(line.time, start, end):
@@ -102,6 +105,8 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
                     group = groups[key] = _Group(format_name, line.level, key[2])
                     group.example = Example(file=relative, line=line.number, text=line.text[:MAX_TEXT])
                 group.count += 1
+                if len(group.positions) < MAX_LINES_PER_GROUP:
+                    group.positions.append((relative, line.number))
                 group.files.add(relative)
                 if line.time is not None:
                     group.first_seen = line.time if group.first_seen is None else min(group.first_seen, line.time)
@@ -145,7 +150,8 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
             groups=page, total_groups=total, shown=len(page), note=note,
         )
         request = {"path": result.path, "since": result.since, "until": result.until, "min_level": min_level}
-        store.add(LOCAL_CALLER, result.scan_id, request, result)
+        kept = {gid: StoredGroup(g.pattern, g.count, g.positions) for gid, g in ordered}
+        store.add(LOCAL_CALLER, result.scan_id, request, result, scanned, kept)
         return result
 
     mcp.tool(

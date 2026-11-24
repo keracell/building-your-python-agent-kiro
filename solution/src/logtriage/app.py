@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastmcp import FastMCP
 
 from .scans import ScanStore
-from .tools import files, findings, search, summary
+from .tools import context, files, findings, search, summary
 
 NAME = "log-triage"
 VERSION = "0.2.0"
@@ -42,6 +42,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     files.register(mcp, root)
     summary.register(mcp, root, store)
     search.register(mcp, root)
+    context.register(mcp, store)
     if not read_only:
         findings.register(mcp, reports)
     return mcp

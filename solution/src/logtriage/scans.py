@@ -11,7 +11,23 @@ from dataclasses import dataclass
 from typing import Any
 
 MAX_SCANS_PER_CALLER = 20
+MAX_LINES_PER_GROUP = 10_000
 LOCAL_CALLER = "local"
+
+
+@dataclass
+class StoredGroup:
+    """A group of a scan: its full count and where its first lines are (relative path, line number)."""
+
+    pattern: str
+    count: int
+    positions: list[tuple[str, int]]
+
+
+@dataclass
+class ScannedFile:
+    full: str  # absolute location when the scan read it
+    format: str
 
 
 @dataclass
@@ -21,6 +37,8 @@ class Scan:
     deadline: float  # on the store's monotonic clock
     request: dict[str, Any]
     summary: Any  # the summarize_logs result that was returned
+    files: dict[str, ScannedFile]  # the files the scan read, by relative path
+    groups: dict[str, StoredGroup]  # every group at or above min_level, by group_id
 
 
 class ScanStore:
@@ -35,13 +53,16 @@ class ScanStore:
     def new_id(self) -> str:
         return "s_" + secrets.token_hex(8)
 
-    def add(self, caller: str, scan_id: str, request: dict[str, Any], summary: Any) -> Scan:
+    def add(
+        self, caller: str, scan_id: str, request: dict[str, Any], summary: Any,
+        files: dict[str, ScannedFile], groups: dict[str, StoredGroup],
+    ) -> Scan:
         """Keep a scan. A caller holds at most 20; the oldest goes first, without a word."""
         with self._lock:
             now = self._clock()
             held = self._scans.setdefault(caller, OrderedDict())
             self._drop_expired(held, now)
-            scan = Scan(scan_id, caller, now + self.ttl_seconds, request, summary)
+            scan = Scan(scan_id, caller, now + self.ttl_seconds, request, summary, files, groups)
             held[scan_id] = scan
             while len(held) > MAX_SCANS_PER_CALLER:
                 held.popitem(last=False)

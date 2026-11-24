@@ -107,3 +107,20 @@ class SaveFindingResult(BaseModel):
     name: str
     path: str
     created: str
+
+
+class GroupLine(BaseModel):
+    file: str
+    line: int
+    time: str | None
+    text: str
+
+
+class GroupLinesResult(BaseModel):
+    scan_id: str
+    group_id: str
+    pattern: str
+    lines: list[GroupLine]
+    total: int
+    shown: int
+    note: str
