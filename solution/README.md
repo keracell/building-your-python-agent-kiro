@@ -30,3 +30,18 @@ If `--root` is missing or not a readable folder, the server prints `log root "<D
 uv run --project 1-surface-and-contract/checks pytest 1-surface-and-contract/checks
 ```
 At this stage `test_t2_server.py` passes and the later files still fail.
+
+## Test
+The server's own tests live in `solution/tests/`. `uv sync --project solution` installs the dev group (pytest and pytest-asyncio).
+
+```bash
+uv run --project solution pytest solution/tests
+```
+
+One layer at a time:
+
+```bash
+uv run --project solution pytest solution/tests/unit
+```
+
+The unit tests call the reader and the grouping rules directly, on small hand-built files, with no MCP in between.
