@@ -55,3 +55,13 @@ def bad_pattern(field: str) -> str:
 def finding_exists(name: str) -> str:
     """E9: a finding with that name is already saved."""
     return f'a finding named "{name}" already exists. Choose a different title.'
+
+
+def one_capture_group(field: str) -> str:
+    """E11: the value pattern must hold exactly one capture group."""
+    return f'{field} must contain exactly one capture group, for example "size=(\\d+)".'
+
+
+def too_many_buckets(needed: int) -> str:
+    """E12: the window needs more buckets than the limit."""
+    return f"the window needs {needed} buckets and the limit is 500. Pass a larger bucket_minutes."

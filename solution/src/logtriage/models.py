@@ -137,3 +137,23 @@ class ReadLinesResult(BaseModel):
     end: int
     total_lines: int
     lines: list[NumberedLine]
+
+
+class TimelineBucket(BaseModel):
+    start: str
+    count: int
+    value_count: int
+    min: float | None
+    median: float | None
+    max: float | None
+
+
+class TimelineResult(BaseModel):
+    scan_id: str
+    pattern: str | None
+    value_pattern: str | None
+    bucket_minutes: int
+    start: str | None
+    end: str | None
+    total: int
+    buckets: list[TimelineBucket]

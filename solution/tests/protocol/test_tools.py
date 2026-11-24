@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from conftest import ERROR_LINES, INFO_LINES, WARN_LINES
 
-TOOLS = ["list_logs", "summarize_logs", "search_logs", "group_lines", "read_lines", "save_finding"]
-READ_ONLY = TOOLS[:5]
+TOOLS = ["list_logs", "summarize_logs", "search_logs", "group_lines", "read_lines", "timeline", "save_finding"]
+READ_ONLY = [name for name in TOOLS if name != "save_finding"]
 
 
-async def test_the_server_publishes_six_tools_with_titles_and_hints(client):
+async def test_the_server_publishes_seven_tools_with_titles_and_hints(client):
     tools = {tool.name: tool for tool in await client.list_tools()}
     assert sorted(tools) == sorted(TOOLS)
     for name in READ_ONLY:

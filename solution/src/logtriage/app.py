@@ -8,11 +8,11 @@ from . import resources
 from .log_setup import CallLogMiddleware
 from .paths import LogRoot
 from .scans import ScanStore
-from .tools import context, files, findings, search, summary
+from .tools import context, files, findings, search, summary, timeline
 
 NAME = "log-triage"
 FRESH_SECONDS = 30  # the freshness pair of the contract: ttlMs 30000, cacheScope "private"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 
 INSTRUCTIONS = (
     "Log Triage reads log files under one folder. Start with list_logs to see what is there. "
@@ -35,7 +35,8 @@ def instructions_for(scan_ttl: int) -> str:
     return (
         f"{INSTRUCTIONS} summarize_logs returns a scan_id that works for {lifetime_text(scan_ttl)}; "
         "pass it to group_lines to read one group's lines without scanning again. "
-        "Use read_lines for the lines around one line. Saved findings are listed at triage://reports."
+        "Use read_lines for the lines around one line. Saved findings are listed at triage://reports. "
+        "Use timeline with a scan_id to see how often a pattern occurs over time, and how a number in those lines moves."
     )
 
 
@@ -53,6 +54,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     summary.register(mcp, root, store)
     search.register(mcp, root)
     context.register(mcp, root, store)
+    timeline.register(mcp, root, store)
     resources.register(mcp, reports, store)
     if not read_only:
         findings.register(mcp, reports, root)
