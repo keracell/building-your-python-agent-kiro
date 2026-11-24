@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastmcp import FastMCP
 
 from . import resources
+from .log_setup import CallLogMiddleware
 from .paths import LogRoot
 from .scans import ScanStore
 from .tools import context, files, findings, search, summary
@@ -45,6 +46,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
         cache_ttl=FRESH_SECONDS, cache_scope="private",
         mask_error_details=True,
     )
+    mcp.add_middleware(CallLogMiddleware())
     store = ScanStore(scan_ttl)
     root = LogRoot(root)  # resolved once, here
     files.register(mcp, root)

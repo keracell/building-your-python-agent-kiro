@@ -7,6 +7,7 @@ import os
 import sys
 from pathlib import Path
 
+from . import log_setup
 from .app import create_server
 
 
@@ -21,6 +22,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--scan-ttl", type=int, default=900, metavar="SECONDS",
         help="how long a scan_id works, 1 or more (default: 900)",
+    )
+    parser.add_argument(
+        "--log-level", choices=log_setup.LEVELS, default=log_setup.DEFAULT_LEVEL, metavar="LEVEL",
+        help="the server's own logging threshold: debug, info, warning or error (default: warning)",
     )
     args = parser.parse_args(argv)
     if args.scan_ttl < 1:
@@ -38,6 +43,7 @@ def main(argv: list[str] | None = None) -> None:
     if not root_is_readable(args.root):
         print(f'log root "{args.root}" is not a readable folder', file=sys.stderr)
         sys.exit(2)
+    log_setup.configure(args.log_level)
     create_server(args.root, args.reports, args.read_only, args.scan_ttl).run(transport="stdio", show_banner=False)
 
 
