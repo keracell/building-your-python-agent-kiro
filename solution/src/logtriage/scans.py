@@ -26,7 +26,6 @@ class StoredGroup:
 
 @dataclass
 class ScannedFile:
-    full: str  # absolute location when the scan read it
     format: str
 
 

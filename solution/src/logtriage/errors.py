@@ -21,3 +21,16 @@ def line_past_end(line: int, file: str, total: int) -> str:
 def is_a_folder(path: str) -> str:
     """E10: a file was needed and the path is a folder."""
     return f'"{path}" is a folder. This needs one file; call list_logs to pick one.'
+
+
+def path_outside(path: str) -> str:
+    """E1: the path leaves the log root, holds a NUL byte, or passes through a symlink."""
+    return (
+        f'path "{path}" is outside the log root. Pass a path relative to the log root; '
+        'list_logs with path "." shows what is there.'
+    )
+
+
+def path_missing(path: str) -> str:
+    """E2: the path passes screening and does not exist."""
+    return f'path "{path}" does not exist under the log root. Call list_logs to see what is there.'

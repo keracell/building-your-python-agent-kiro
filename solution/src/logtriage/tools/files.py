@@ -6,10 +6,11 @@ import os
 from typing import Annotated
 
 from fastmcp import FastMCP
-from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..logs import reader
+from ..logs.formats import UNKNOWN_FORMAT
+from ..paths import LogRoot
 from ..models import ListLogsResult, LogFile
 
 DESCRIPTION = (
@@ -19,25 +20,28 @@ DESCRIPTION = (
 )
 
 
-def register(mcp: FastMCP, root: str) -> None:
+def listed_format(full: str) -> str:
+    """The detected format; a `.gz` file that fails within the lines detection reads is listed as unknown."""
+    try:
+        return reader.format_of(full)
+    except reader.Unreadable:
+        return UNKNOWN_FORMAT
+
+
+def register(mcp: FastMCP, root: LogRoot) -> None:
     def list_logs(
         path: Annotated[str, Field(max_length=500, description="File or folder, relative to the log root.")] = ".",
         limit: Annotated[int, Field(ge=1, le=500, description="Most files to return.")] = 50,
         offset: Annotated[int, Field(ge=0, description="Files to skip, for the next page.")] = 0,
     ) -> ListLogsResult:
-        try:
-            location = reader.resolve_path(root, path)
-        except reader.PathRefused as exc:
-            raise ToolError(str(exc)) from None
-        if not os.path.exists(location):
-            raise ToolError(f"path {path!r} does not exist under the log root")
-        everything = reader.walk_files(location)
+        location = root.resolve(path)
+        everything = [entry.full for entry in reader.walk(location) if not entry.symlink]
         page = [
             LogFile(
-                path=reader.relative_path(root, full),
+                path=root.relative(full),
                 size_bytes=os.path.getsize(full),
                 compressed=reader.is_compressed(full),
-                format=reader.format_of(full),
+                format=listed_format(full),
             )
             for full in everything[offset:offset + limit]
         ]
@@ -46,7 +50,7 @@ def register(mcp: FastMCP, root: str) -> None:
         if offset + shown < total:
             note = f"Showing {shown} of {total} files. Pass offset={offset + shown} for more."
         return ListLogsResult(
-            path=reader.relative_path(root, location), files=page, total=total, shown=shown, note=note,
+            path=root.relative(location), files=page, total=total, shown=shown, note=note,
         )
 
     mcp.tool(

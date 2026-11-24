@@ -12,9 +12,10 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..logs import reader
-from ..logs.formats import LEVELS, UNKNOWN_FORMAT
+from ..logs.formats import LEVELS
 from ..logs.groups import group_id, pattern_of
 from ..logs.times import format_time, in_window, parse_instant
+from ..paths import LogRoot
 from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore, ScannedFile, StoredGroup
 from ..models import ByLevel, Example, Group, MinLevel, SkippedFile, SummarizeResult
 
@@ -55,7 +56,7 @@ def show(moment: datetime | None) -> str | None:
     return None if moment is None else format_time(moment)
 
 
-def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
+def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
     def summarize_logs(
         path: Annotated[str, Field(max_length=500, description="File or folder, relative to the log root.")] = ".",
         since: Annotated[str | None, Field(max_length=40, description="Window start, inclusive, UTC unless it has an offset.")] = None,
@@ -63,12 +64,7 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         min_level: Annotated[MinLevel, Field(description="Lowest level whose groups are listed.")] = "warning",
         limit: Annotated[int, Field(ge=1, le=100, description="Most groups to return.")] = 20,
     ) -> SummarizeResult:
-        try:
-            location = reader.resolve_path(root, path)
-        except reader.PathRefused as exc:
-            raise ToolError(str(exc)) from None
-        if not os.path.exists(location):
-            raise ToolError(f"path {path!r} does not exist under the log root")
+        location = root.resolve(path)
         start, end = parse_bound("since", since), parse_bound("until", until)
         floor = 0 if min_level == "any" else LEVELS.index(min_level)
 
@@ -79,16 +75,16 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         groups: dict[tuple[str, str, str], _Group] = {}
         scanned: dict[str, ScannedFile] = {}
 
-        for full in reader.walk_files(location):
-            relative = reader.relative_path(root, full)
-            format_name = reader.format_of(full)
-            if format_name == UNKNOWN_FORMAT:
-                if len(skipped) < MAX_SKIPPED:
-                    skipped.append(SkippedFile(path=relative, reason="unknown format"))
+        for entry in reader.walk(location):
+            relative = root.relative(entry.full)
+            try:
+                format_name, file_lines = reader.load_for_scan(entry)
+            except reader.Skipped as skip:
+                skipped.append(SkippedFile(path=relative, reason=skip.reason))
                 continue
             files_scanned += 1
-            scanned[relative] = ScannedFile(full, format_name)
-            for line in reader.read_lines(full, format_name):
+            scanned[relative] = ScannedFile(format_name)
+            for line in file_lines:
                 lines_scanned += 1
                 if not in_window(line.time, start, end):
                     continue
@@ -111,6 +107,8 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
                 if line.time is not None:
                     group.first_seen = line.time if group.first_seen is None else min(group.first_seen, line.time)
                     group.last_seen = line.time if group.last_seen is None else max(group.last_seen, line.time)
+
+        skipped = sorted(skipped, key=lambda item: os.fsencode(item.path))[:MAX_SKIPPED]
 
         ordered = sorted(
             ((group_id(g.format, g.level, g.pattern), g) for g in groups.values()),
@@ -141,7 +139,7 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         expires_at = datetime.now(UTC) + timedelta(seconds=store.ttl_seconds)
         result = SummarizeResult(
             scan_id=store.new_id(), expires_at=format_time(expires_at),
-            path=reader.relative_path(root, location),
+            path=root.relative(location),
             since=show(start), until=show(end), min_level=min_level,
             files_scanned=files_scanned, skipped=skipped,
             lines_scanned=lines_scanned, lines_in_window=lines_in_window,

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import re
 from typing import Annotated
 
@@ -11,8 +10,9 @@ from fastmcp.exceptions import ToolError
 from pydantic import Field
 
 from ..logs import reader
-from ..logs.formats import LEVELS, UNKNOWN_FORMAT
+from ..logs.formats import LEVELS
 from ..logs.times import in_window
+from ..paths import LogRoot
 from ..models import MinLevel, SearchMatch, SearchResult
 from .summary import parse_bound, show
 
@@ -25,7 +25,7 @@ DESCRIPTION = (
 MAX_TEXT = 500
 
 
-def register(mcp: FastMCP, root: str) -> None:
+def register(mcp: FastMCP, root: LogRoot) -> None:
     def search_logs(
         pattern: Annotated[str, Field(min_length=1, max_length=200, description="Regular expression, case-sensitive; (?i) allowed.")],
         path: Annotated[str, Field(max_length=500, description="File or folder, relative to the log root.")] = ".",
@@ -35,12 +35,7 @@ def register(mcp: FastMCP, root: str) -> None:
         limit: Annotated[int, Field(ge=1, le=200, description="Most matches to return.")] = 50,
         offset: Annotated[int, Field(ge=0, description="Matches to skip, for the next page.")] = 0,
     ) -> SearchResult:
-        try:
-            location = reader.resolve_path(root, path)
-        except reader.PathRefused as exc:
-            raise ToolError(str(exc)) from None
-        if not os.path.exists(location):
-            raise ToolError(f"path {path!r} does not exist under the log root")
+        location = root.resolve(path)
         try:
             expression = re.compile(pattern, re.ASCII)
         except re.error as exc:
@@ -49,12 +44,13 @@ def register(mcp: FastMCP, root: str) -> None:
         floor = 0 if min_level == "any" else LEVELS.index(min_level)
 
         matches: list[SearchMatch] = []
-        for full in reader.walk_files(location):
-            format_name = reader.format_of(full)
-            if format_name == UNKNOWN_FORMAT:
+        for entry in reader.walk(location):
+            try:
+                _, file_lines = reader.load_for_scan(entry)
+            except reader.Skipped:
                 continue
-            relative = reader.relative_path(root, full)
-            for line in reader.read_lines(full, format_name):
+            relative = root.relative(entry.full)
+            for line in file_lines:
                 if (
                     in_window(line.time, start, end)
                     and LEVELS.index(line.level) >= floor
@@ -72,7 +68,7 @@ def register(mcp: FastMCP, root: str) -> None:
         if offset + shown < total:
             note = f"Showing {shown} of {total} matches. Pass offset={offset + shown} for more."
         return SearchResult(
-            path=reader.relative_path(root, location), pattern=pattern,
+            path=root.relative(location), pattern=pattern,
             matches=page, total=total, shown=shown, note=note,
         )
 

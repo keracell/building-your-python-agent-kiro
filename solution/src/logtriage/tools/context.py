@@ -13,6 +13,7 @@ from .. import errors
 from ..logs import reader
 from ..logs.times import format_time
 from ..models import GroupLine, GroupLinesResult, NumberedLine, ReadLinesResult
+from ..paths import LogRoot
 from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore
 
 DESCRIPTION = (
@@ -28,7 +29,7 @@ READ_DESCRIPTION = (
 MAX_TEXT = 500
 
 
-def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
+def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
     def group_lines(
         scan_id: Annotated[str, Field(pattern=r"^s_[0-9a-f]{16}$", description="The scan_id from summarize_logs.")],
         group_id: Annotated[str, Field(pattern=r"^[0-9a-f]{12}$", description="A group_id from that scan's groups.")],
@@ -50,7 +51,8 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         found: dict[tuple[str, int], reader.Line] = {}
         for relative, numbers in wanted.items():
             scanned = scan.files[relative]
-            for line in reader.read_lines(scanned.full, scanned.format):
+            location = root.resolve(relative)  # screened again: the file or a parent may have been replaced
+            for line in reader.read_lines(location, scanned.format):
                 if line.number in numbers:
                     found[(relative, line.number)] = line
         lines = [
@@ -87,13 +89,8 @@ def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
         before: Annotated[int, Field(ge=0, le=50, description="Lines to show before it.")] = 5,
         after: Annotated[int, Field(ge=0, le=200, description="Lines to show after it.")] = 20,
     ) -> ReadLinesResult:
-        try:
-            location = reader.resolve_path(root, path)
-        except reader.PathRefused as exc:
-            raise ToolError(str(exc)) from None
-        if not os.path.exists(location):
-            raise ToolError(f"path {path!r} does not exist under the log root")
-        name = reader.relative_path(root, location)
+        location = root.resolve(path)
+        name = root.relative(location)
         if os.path.isdir(location):
             raise ToolError(errors.is_a_folder(name))
 
