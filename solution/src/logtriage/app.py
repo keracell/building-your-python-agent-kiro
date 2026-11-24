@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from fastmcp import FastMCP
 
+from . import resources
 from .scans import ScanStore
 from .tools import context, files, findings, search, summary
 
 NAME = "log-triage"
+FRESH_SECONDS = 30  # the freshness pair of the contract: ttlMs 30000, cacheScope "private"
 VERSION = "0.2.0"
 
 INSTRUCTIONS = (
@@ -37,12 +39,16 @@ def instructions_for(scan_ttl: int) -> str:
 
 def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900) -> FastMCP:
     """Build the server for a log root and register its tools; the write tool only when not read-only."""
-    mcp = FastMCP(name=NAME, version=VERSION, instructions=instructions_for(scan_ttl))
+    mcp = FastMCP(
+        name=NAME, version=VERSION, instructions=instructions_for(scan_ttl),
+        cache_ttl=FRESH_SECONDS, cache_scope="private",
+    )
     store = ScanStore(scan_ttl)
     files.register(mcp, root)
     summary.register(mcp, root, store)
     search.register(mcp, root)
     context.register(mcp, root, store)
+    resources.register(mcp, reports, store)
     if not read_only:
         findings.register(mcp, reports)
     return mcp
