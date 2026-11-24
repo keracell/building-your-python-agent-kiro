@@ -1,0 +1,25 @@
+<<<<<<< HEAD
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.env
+*.env
+!tokens.example.env
+.mcp.json
+.DS_Store
+.idea/
+.vscode/
+*.swp
+=======
+
+.git
+.vscode
+node_modules
+.env
+AGENTS-2.md
+tool-timer-state.jsonl
+>>>>>>> c2fbe12029724f9bd5c35aae6c2f129e6ca86261
