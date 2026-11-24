@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ru" data-width="wide">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Подключаем телеметрию для MCP · Расширение возможностей ИИ с помощью собственных MCP-серверов</title>
+<script>(function(){try{var d=document.documentElement,t=localStorage.getItem("nc-theme"),w=localStorage.getItem("nc-width");
+if(t)d.setAttribute("data-theme",t);else if(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)d.setAttribute("data-theme","dark");
+if(w)d.setAttribute("data-width",w);}catch(e){}})();</script>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-lesson" data-root="../">
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Показать навигацию" data-act="menu"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <a class="brand" href="../index.html"><span class="brand-mark">N</span><span class="brand-text">Курсы Nebius Academy</span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Курсы</a><span class="sep">/</span><a href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Расширение возможностей ИИ с помощью собственных MCP-серверов</a><span class="sep">/</span><span>Подключаем телеметрию для MCP</span></nav>
+  <div class="top-actions">
+    <div class="search" role="search">
+      <span class="search-icon"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13.5 13.5L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      <input id="search-input" type="search" placeholder="Поиск по всем урокам…  ( / )" autocomplete="off" aria-label="Поиск по всем урокам">
+      <div class="search-results" id="search-results" hidden></div>
+    </div>
+    <nav class="lang-switch" aria-label="Language"><a href="../../html/Extending%20AI%20with%20Custom%20MCP%20Servers/18%20-%20Integrate%20telemetry%20for%20MCP.html" hreflang="en" lang="en" title="Read in English" data-lang-switch>EN</a><span class="active" aria-current="true">RU</span></nav>
+    <button class="icon-btn" type="button" data-act="width" title="Ширина текста"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M2 10h16M5 7l-3 3 3 3M15 7l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="btn-label" id="width-label">Широко</span></button>
+    <button class="icon-btn" type="button" data-act="theme" title="Светлая / тёмная тема"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 3a7 7 0 010 14z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+<div class="layout has-toc">
+<nav class="sidebar" id="sidebar" aria-label="Course navigation"><div class="sidebar-inner"><a class="side-home" href="../index.html">Все курсы</a><details class="side-course"><summary><span class="side-course-name">Создание собственного ИИ-агента</span><span class="side-course-meta">29/29</span></summary><a class="side-overview" href="../Building%20Your%20Own%20AI%20Agent/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/01%20-%20Module%20Overview%20Building%20Your%20Own%20AI%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">1</span><span class="side-title">Обзор модуля: создание собственного ИИ-агента</span><span class="tag-en" data-key="agent-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/02%20-%20What%20Is%20an%20AI%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">2</span><span class="side-title">Что такое ИИ-агент?</span><span class="tag-en" data-key="agent-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/03%20-%20Practice%20What%20Is%20an%20AI%20Agent%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">3</span><span class="side-title">Практика: что такое ИИ-агент? [версия для Kiro]</span><span class="tag-en" data-key="agent-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/04%20-%20Defining%20the%20Scope.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">4</span><span class="side-title">Определение рамок задачи</span><span class="tag-en" data-key="agent-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/05%20-%20Practice%20Defining%20the%20Scope%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">5</span><span class="side-title">Практика: определение рамок задачи [версия для Kiro]</span><span class="tag-en" data-key="agent-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/06%20-%20Assembling%20Your%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">6</span><span class="side-title">Сборка агента</span><span class="tag-en" data-key="agent-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/07%20-%20How%20to%20Assemble%20Your%20Agent%20in%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">7</span><span class="side-title">Как собрать агента в Kiro</span><span class="tag-en" data-key="agent-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/08%20-%20Practice%20Assembling%20Your%20Agent%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">8</span><span class="side-title">Практика: сборка агента [версия для Kiro]</span><span class="tag-en" data-key="agent-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/09%20-%20Agent%20Tooling.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">9</span><span class="side-title">Инструменты агента</span><span class="tag-en" data-key="agent-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/10%20-%20How%20to%20Add%20Tools%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">10</span><span class="side-title">Как добавить инструменты: Kiro</span><span class="tag-en" data-key="agent-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/11%20-%20Practice%20Agent%20Tooling%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">11</span><span class="side-title">Практика: инструменты агента [версия для Kiro]</span><span class="tag-en" data-key="agent-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/12%20-%20Skills.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">12</span><span class="side-title">Skills</span><span class="tag-en" data-key="agent-12" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/13%20-%20How%20to%20Add%20Skills%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">13</span><span class="side-title">Как добавить skills: Kiro</span><span class="tag-en" data-key="agent-13" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/14%20-%20Practice%20Skills%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">14</span><span class="side-title">Практика: skills [версия для Kiro]</span><span class="tag-en" data-key="agent-14" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/15%20-%20Adding%20Subagents.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">15</span><span class="side-title">Добавление subagents</span><span class="tag-en" data-key="agent-15" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/16%20-%20How%20to%20Add%20Subagents%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">16</span><span class="side-title">Как добавить subagents: Kiro</span><span class="tag-en" data-key="agent-16" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/17%20-%20Practice%20Subagents%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">17</span><span class="side-title">Практика: subagents [версия для Kiro]</span><span class="tag-en" data-key="agent-17" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/18%20-%20Adding%20Memory.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">18</span><span class="side-title">Добавление памяти</span><span class="tag-en" data-key="agent-18" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/19%20-%20How%20to%20Add%20Memory%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">19</span><span class="side-title">Как добавить память: Kiro</span><span class="tag-en" data-key="agent-19" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/20%20-%20Practice%20Adding%20Memory%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">20</span><span class="side-title">Практика: добавление памяти [версия для Kiro]</span><span class="tag-en" data-key="agent-20" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/21%20-%20Hooks.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">21</span><span class="side-title">Hooks</span><span class="tag-en" data-key="agent-21" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/22%20-%20How%20to%20Add%20Hooks%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">22</span><span class="side-title">Как добавить hooks: Kiro</span><span class="tag-en" data-key="agent-22" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/23%20-%20Practice%20Adding%20Hooks%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">23</span><span class="side-title">Практика: добавление hooks [версия для Kiro]</span><span class="tag-en" data-key="agent-23" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/24%20-%20Observability.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">24</span><span class="side-title">Наблюдаемость</span><span class="tag-en" data-key="agent-24" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/25%20-%20How%20to%20Add%20Observability%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">25</span><span class="side-title">Как добавить наблюдаемость: Kiro</span><span class="tag-en" data-key="agent-25" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/26%20-%20Practice%20Adding%20Observability%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">26</span><span class="side-title">Практика: добавление наблюдаемости [версия для Kiro]</span><span class="tag-en" data-key="agent-26" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/27%20-%20Output%20Verification.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">27</span><span class="side-title">Проверка результата</span><span class="tag-en" data-key="agent-27" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/28%20-%20Final%20Practice%20Submission%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">28</span><span class="side-title">Итоговое практическое задание [версия для Kiro]</span><span class="tag-en" data-key="agent-28" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/29%20-%20Conclusion.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">29</span><span class="side-title">Заключение</span><span class="tag-en" data-key="agent-29" title="Ещё не переведено">EN</span></a></li></ol></details><details class="side-course" open><summary><span class="side-course-name">Расширение возможностей ИИ с помощью собственных MCP-серверов</span><span class="side-course-meta">0/19</span></summary><a class="side-overview" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/01%20-%20Introduction.html"><span class="st st-todo"></span><span class="side-num">1</span><span class="side-title">Введение</span><span class="tag-en" data-key="mcp-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/02%20-%20MCP%20in%20a%20Nutshell.html"><span class="st st-todo"></span><span class="side-num">2</span><span class="side-title">MCP в двух словах</span><span class="tag-en" data-key="mcp-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/03%20-%20Choosing%20an%20MCP%20Server%20Buy%20or%20Build.html"><span class="st st-todo"></span><span class="side-num">3</span><span class="side-title">Выбор MCP-сервера: готовый или собственный</span><span class="tag-en" data-key="mcp-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/04%20-%20How%20to%20connect%20an%20existing%20MCP%20server%20in%20your%20tool%20of%20choice.html"><span class="st st-todo"></span><span class="side-num">4</span><span class="side-title">Как подключить готовый MCP-сервер к вашему инструменту (Claude Code, Cursor, Codex, Copilot)</span><span class="tag-en" data-key="mcp-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/05%20-%20Connecting%20an%20MCP%20server%20to%20your%20tool.html"><span class="st st-todo"></span><span class="side-num">5</span><span class="side-title">Подключение MCP-сервера к вашему инструменту</span><span class="tag-en" data-key="mcp-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/06%20-%20Inspecting%20your%20MCP%20Server%20with%20the%20MCP%20Inspector.html"><span class="st st-todo"></span><span class="side-num">6</span><span class="side-title">Проверка MCP-сервера с помощью MCP Inspector</span><span class="tag-en" data-key="mcp-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/07%20-%20Basics%20of%20Model%20Context%20Protocol.html"><span class="st st-todo"></span><span class="side-num">7</span><span class="side-title">Основы Model Context Protocol</span><span class="tag-en" data-key="mcp-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/08%20-%20Designing%20your%20MCP%20Server%20the%20surface%20and%20the%20contract.html"><span class="st st-todo"></span><span class="side-num">8</span><span class="side-title">Проектирование MCP-сервера: поверхность и контракт</span><span class="tag-en" data-key="mcp-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/09%20-%20Build%20the%20surface%20and%20the%20contract.html"><span class="st st-todo"></span><span class="side-num">9</span><span class="side-title">Создаём поверхность и контракт</span><span class="tag-en" data-key="mcp-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/10%20-%20Designing%20your%20MCP%20Server%20state%2C%20safety%20and%20errors.html"><span class="st st-todo"></span><span class="side-num">10</span><span class="side-title">Проектирование MCP-сервера: состояние, безопасность и ошибки</span><span class="tag-en" data-key="mcp-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/11%20-%20State%2C%20safety%20and%20errors.html"><span class="st st-current" title="Вы здесь"></span><span class="side-num">11</span><span class="side-title">Состояние, безопасность и ошибки</span><span class="tag-en" data-key="mcp-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/12%20-%20Testing%20and%20Debugging%20your%20MCP%20Server.html"><span class="st st-todo"></span><span class="side-num">12</span><span class="side-title">Тестирование и отладка MCP-сервера</span><span class="tag-en" data-key="mcp-12" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/13%20-%20Testing%20and%20Debugging%20the%20Server.html"><span class="st st-todo"></span><span class="side-num">13</span><span class="side-title">Тестирование и отладка сервера</span><span class="tag-en" data-key="mcp-13" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/14%20-%20Integrating%20with%20Agents%20and%20Clients.html"><span class="st st-todo"></span><span class="side-num">14</span><span class="side-title">Интеграция с агентами и клиентами</span><span class="tag-en" data-key="mcp-14" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/15%20-%20Integrate%20with%20a%20Real%20Agent.html"><span class="st st-todo"></span><span class="side-num">15</span><span class="side-title">Интеграция с реальным агентом</span><span class="tag-en" data-key="mcp-15" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/16%20-%20Telemetry%20for%20MCP.html"><span class="st st-todo"></span><span class="side-num">16</span><span class="side-title">Телеметрия для MCP</span><span class="tag-en" data-key="mcp-16" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/17%20-%20Tracing%20your%20MCP%20server%20in%20LangSmith%20from%20your%20tool%20of%20choice.html"><span class="st st-todo"></span><span class="side-num">17</span><span class="side-title">Трассировка MCP-сервера в LangSmith из вашего инструмента (Claude Code, Cursor, Codex, Copilot)</span><span class="tag-en" data-key="mcp-17" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson active" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/18%20-%20Integrate%20telemetry%20for%20MCP.html" aria-current="page"><span class="st st-todo"></span><span class="side-num">18</span><span class="side-title">Подключаем телеметрию для MCP</span><span class="tag-en" data-key="mcp-18" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/19%20-%20Conclusion.html"><span class="st st-todo"></span><span class="side-num">19</span><span class="side-title">Заключение</span><span class="tag-en" data-key="mcp-19" title="Ещё не переведено">EN</span></a></li></ol></details><details class="side-course"><summary><span class="side-course-name">Оркестрация мультиагентных систем</span><span class="side-course-meta">0/12</span></summary><a class="side-overview" href="../Orchestrating%20Multi-Agent%20Systems/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/01%20-%20One%20Agent%20or%20More.html"><span class="st st-todo"></span><span class="side-num">1</span><span class="side-title">Один агент или несколько?</span><span class="tag-en" data-key="multi-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/02%20-%20The%20Five%20Levels%20of%20Agency.html"><span class="st st-todo"></span><span class="side-num">2</span><span class="side-title">Пять уровней агентности</span><span class="tag-en" data-key="multi-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/03%20-%20Role%20Decomposition.html"><span class="st st-todo"></span><span class="side-num">3</span><span class="side-title">Декомпозиция ролей</span><span class="tag-en" data-key="multi-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/04%20-%20Graph-Based%20Orchestration.html"><span class="st st-todo"></span><span class="side-num">4</span><span class="side-title">Оркестрация на основе графов</span><span class="tag-en" data-key="multi-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/05%20-%20State%20Management.html"><span class="st st-todo"></span><span class="side-num">5</span><span class="side-title">Управление состоянием</span><span class="tag-en" data-key="multi-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/06%20-%20Building%20the%20Graph%20Nodes%2C%20Edges%20%26%20Wiring.html"><span class="st st-todo"></span><span class="side-num">6</span><span class="side-title">Построение графа: узлы, рёбра и связи</span><span class="tag-en" data-key="multi-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/07%20-%20Practice%20Building%20the%20Graph%20%26%20State.html"><span class="st st-todo"></span><span class="side-num">7</span><span class="side-title">Практика: граф и состояние</span><span class="tag-en" data-key="multi-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/08%20-%20Observability%20for%20Multi-Agent%20Systems.html"><span class="st st-todo"></span><span class="side-num">8</span><span class="side-title">Наблюдаемость мультиагентных систем</span><span class="tag-en" data-key="multi-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/09%20-%20Practice%20Observability%20for%20Multi-Agent%20Systems.html"><span class="st st-todo"></span><span class="side-num">9</span><span class="side-title">Практика: наблюдаемость мультиагентных систем</span><span class="tag-en" data-key="multi-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/10%20-%20Human-in-the-Loop%20in%20LangGraph.html"><span class="st st-todo"></span><span class="side-num">10</span><span class="side-title">Human-in-the-loop в LangGraph</span><span class="tag-en" data-key="multi-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/11%20-%20Practice%20Final%20Challenge.html"><span class="st st-todo"></span><span class="side-num">11</span><span class="side-title">Практика: итоговое задание</span><span class="tag-en" data-key="multi-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/12%20-%20Course%20Conclusion.html"><span class="st st-todo"></span><span class="side-num">12</span><span class="side-title">Заключение курса</span><span class="tag-en" data-key="multi-12" title="Ещё не переведено">EN</span></a></li></ol></details></div></nav>
+<main class="main" id="main">
+<article class="content lesson"><header class="lesson-head">
+  <a class="eyebrow" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Расширение возможностей ИИ с помощью собственных MCP-серверов · Урок 18 из 19</a>
+  <h1>Подключаем телеметрию для MCP</h1>
+  <div class="lesson-meta"><span class="badge badge-project">Проект</span><span class="meta-item">~27 мин чтения</span>
+  <span class="meta-item">Репозиторий: <code>build-your-own-mcp-fastmcp</code></span></div>
+</header><div class="lesson-body"><div class="md" data-b="Markdown"><div class="callout callout-default"><p>⌨️ В этом практическом задании вы добавите трассы OpenTelemetry в свой сервер Log Triage и по ним увидите, на что расход времени сервера уходит в ходе расследования.</p>
+</div>
+<p>Log Triage — это MCP-сервер, с помощью которого ИИ-агент расследует набор логов на вашей машине. Агент спрашивает, какие там есть файлы, что пошло не так в файле или папке за некоторый промежуток времени и какие строки соответствуют шаблону, а в ответ получает счётчики, группы сообщений и несколько строк вместо целых файлов. Сервер умеет читать форматы логов и больше ничего: все выводы делает агент.</p>
+<p>Ваш сервер в <code>solution/</code> уже перечисляет, суммирует и ищет по логам, хранит сканы, по которым агент может листать страницы, читает вокруг строки, проверяет каждый путь, пишет лог каждого вызова, рисует временную шкалу и обслуживает несколько вызывающих сторон по HTTP с промптом, задающим рамки расследования. Он отвечает, но ничто не фиксирует, сколько времени занял ответ и какая работа за ним стояла.</p>
+<blockquote>
+<p>Марта дежурит по хостинг-платформе своей команды, и её кодинг-агент отвечает на вопросы о логах платформы через сервер, к которому команда теперь обращается по HTTP. Один ответ пришёл верным, но слишком долго, и, прежде чем менять код, она хочет понять, какой из стоящих за ним вызовов занял больше всего времени и какая часть времени этого вызова ушла на чтение логов.</p>
+</blockquote>
+<p>В конце ваш агент отвечает на вопрос о логах при включённой телеметрии, а вы читаете по трассе, во что обошлось его расследование. Обязательный вопрос, слово в слово:</p>
+<blockquote>
+<p>Certificate orders were failing at some point. When did it start, is it still happening, and do the CI results agree?</p>
+</blockquote>
+<p>Что вы построите:</p>
+<ul>
+<li>Версию <code>0.5.0</code> с теми же инструментами, ресурсами и промптом.</li>
+<li>Необязательный экспорт по OTLP/HTTP из стандартных переменных <code>OTEL_</code>, с именем и версией сервиса и ограниченным по времени сбросом перед выходом сервера, из готового модуля, который вы подключите.</li>
+<li>Один SERVER-спан на запрос, названный по конвенциям MCP и присоединённый к трассе вызывающей стороны из <code>_meta</code>, с trace ID в отладочной строке <code>tool=</code>.</li>
+<li>Спаны чтения по каждому файлу со счётчиками выполненной работы.</li>
+<li>Спаны без аргументов, результатов, отклонённых URI ресурсов и токенов.</li>
+<li>Один вызов инструмента в LangSmith как tool run с его read runs, а в локальном просмотрщике трасс — со счётчиками.</li>
+<li>Трассированное расследование и ответы на два вопроса по его трассе.</li>
+</ul>
+<p>Если endpoint не задан, ничего не экспортируется, а сервер ведёт себя как сейчас. То же самое сказано в <code>5-telemetry/CONTRACT.md</code>, который агент читает первым по <code>CLAUDE.md</code> практической папки.</p>
+<p>Вам нужно знать, что такое спан, трасса и родитель спана, как middleware в FastMCP оборачивает MCP-запрос, как контекст трассировки W3C передаётся в <code>_meta</code> и что OTLP-экспортёр делает с завершёнными спанами.</p>
+</div>
+<div class="step-divider" data-b="ActionButton"><span>Поехали!</span></div>
+<div class="md" data-b="Markdown"><h2 id="workflow-at-a-glance">👩‍💻 Обзор шагов</h2>
+<ol>
+<li>Подготовьте окружение</li>
+<li>Задача 1: экспорт и завершение работы</li>
+<li>Задача 2: спаны запросов и трасса вызывающей стороны</li>
+<li>Задача 3: чтение</li>
+<li>Задача 4: что не должно попадать в спаны</li>
+<li>Задача 5: бэкенд для трасс</li>
+<li>Задача 6: кейс с включённой телеметрией</li>
+<li>Проверьте свою работу</li>
+<li>Отправьте решение</li>
+</ol>
+<h2 id="1-set-up-your-environment">1. Подготовьте окружение</h2>
+<p>Продолжайте в своей копии <code>build-your-own-mcp-fastmcp</code> с сервером в <code>solution/</code>. Прочитайте корневой <code>README.md</code>, затем <code>5-telemetry/README.md</code> — там описан этап и его файлы. В папке <code>5-telemetry/</code> также лежат контракт, правила, стартовый модуль, руководство по хосту и бэкенду и проверки для этих задач. Откройте терминал в корне репозитория.</p>
+<div class="callout callout-default"><p>💡 Если ваш сервер с предыдущего этапа неполный или не проходит свои проверки, скачайте <a href="https://github.com/nebius-academy-templates/build-your-own-mcp-fastmcp-for-revs/tree/main/build-your-own-mcp-fastmcp-4-agents-and-clients/build-your-own-mcp-fastmcp" target="_blank" rel="noopener noreferrer" class="ext">готовый проект предыдущего этапа</a> и возьмите его папку <code>solution/</code> как отправную точку для этого задания.</p>
+</div>
+<p>Понадобятся такие инструменты:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Версия</th>
+<th>Для чего</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.13 (его ставит uv)</td>
+<td>сервер и проверки</td>
+</tr>
+<tr>
+<td>uv</td>
+<td>0.11 или новее</td>
+<td>окружения, запуск сервера и проверки</td>
+</tr>
+<tr>
+<td>FastMCP</td>
+<td>4.0.3, закреплена в <code>pyproject.toml</code> сервера</td>
+<td>библиотека MCP-сервера</td>
+</tr>
+<tr>
+<td>OpenTelemetry Python</td>
+<td>SDK 1.44.0 (<code>opentelemetry-sdk</code>, <code>opentelemetry-exporter-otlp-proto-http</code>), добавляется в задаче 1</td>
+<td>спаны и OTLP-экспортёр</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>22.19 или новее</td>
+<td>MCP Inspector через <code>npx</code></td>
+</tr>
+<tr>
+<td>Хост агента</td>
+<td>Claude Code, Codex CLI или другой хост, умеющий работать с MCP-серверами по HTTP</td>
+<td>построение сервера и кейс</td>
+</tr>
+<tr>
+<td>Аккаунт LangSmith</td>
+<td>бесплатный план Developer</td>
+<td>бэкенд для трасс в задачах 5 и 6</td>
+</tr>
+<tr>
+<td>PowerShell 7, только Windows</td>
+<td>7.3 или новее (<code>pwsh</code>)</td>
+<td>каждая строка для Windows, включая хранилище учётных данных</td>
+</tr>
+<tr>
+<td>libsecret-tools, только Linux</td>
+<td>любая свежая версия (<code>libsecret</code> в Fedora)</td>
+<td><code>secret-tool</code>, который хранит ключ LangSmith в связке ключей рабочего стола</td>
+</tr>
+<tr>
+<td>git</td>
+<td>любая свежая версия</td>
+<td>коммит каждого задания</td>
+</tr>
+</tbody>
+</table></div>
+<p>Запускайте собственные тесты и проверки этого задания из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>pytest<span class="w"> </span>solution/tests
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks</code></pre></div>
+<p>Ваши собственные тесты проходят:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>============================== 95 passed in 2.50s ==============================</code></pre></div>
+<p>Проверки этого задания падают во всех файлах, потому что ваш сервер пока не экспортирует спаны, и большинство сбоев называют отсутствующий спан. Проходит только <code>test_t1_disabled</code>, ведь сервер без телеметрии ничего не экспортирует.</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>5-telemetry/checks/test_t1_export.py .FFF                                [ 26%]
+5-telemetry/checks/test_t2_context.py FFFFF                              [ 60%]
+5-telemetry/checks/test_t2_spans.py F                                    [ 66%]
+5-telemetry/checks/test_t3_reads.py FFF                                  [ 86%]
+5-telemetry/checks/test_t4_privacy.py FF                                 [100%]
+...
+FAILED 5-telemetry/checks/test_t1_export.py::test_t1_export_and_shutdown[stdio-eof] - Failed: missing &#x27;tools/call list_logs&#x27; span: implement this task&#x27;s instrumentation (0 exported spans)
+...
+FAILED 5-telemetry/checks/test_t4_privacy.py::test_t4_resource_uris - AssertionError: only the served resource&#x27;s URI belongs on a resources/read span: []
+======================== 14 failed, 1 passed in 15.69s =========================</code></pre></div>
+<p>Начните новую сессию кодинг-агента в корне репозитория. Он прочитает корневой <code>CLAUDE.md</code>, который сначала отправит его в <code>CLAUDE.md</code> практической папки.</p>
+<p>Давайте агенту по одному промпту за раз, по порядку, в одной сессии. После каждого промпта убедитесь, что контрольная точка в его конце выполнена, и только потом идите дальше. Задачи 5 и 6 выполняются в LangSmith, локальном просмотрщике и хосте по шагам ниже.</p>
+<h3 id="project-structure">Структура проекта</h3>
+<p>Вот папки, с которыми вы будете работать; расположение файлов внутри <code>solution/</code> остаётся за вами: что добавить, сказано в задачах и промптах.</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>build-your-own-mcp-fastmcp/
+  4-agents-and-clients/        HTTP contract, example tokens and cases
+  5-telemetry/                 current contract, starter module, backend guide and checks
+  docs/                        log format and corpus notes
+  reports/                     saved findings
+  s3_logs/                     read-only log bundle
+  solution/                    your Python server</code></pre></div>
+<h2 id="2-task-1-export-and-shutdown">2. Задача 1: экспорт и завершение работы</h2>
+<div class="callout callout-default"><p>💡 Цель: телеметрия выключена, пока не задан endpoint, а если он задан, завершённые спаны доходят до бэкенда раньше, чем сервер завершится.</p>
+</div>
+<p>OTLP/HTTP-экспортёр берёт endpoint и заголовки из переменных <code>OTEL_</code>, а пакетный провайдер держит завершённые спаны в памяти, поэтому сервер устанавливает провайдер до загрузки, только когда endpoint задан, и сбрасывает его перед выходом процесса, в том числе по сигналу. Эта настройка лежит в стартовом модуле <code>5-telemetry/starter/telemetry.py</code>: <code>configure</code> устанавливает провайдер и экспортёр, когда endpoint задан, <code>shutdown</code> сбрасывает последние спаны не дольше пяти секунд, а <code>flush_and_exit</code> сбрасывает и сразу завершает процесс. Агент подключает его к серверу.</p>
+<p>Реализуйте правила из <code>5-telemetry/CONTRACT.md</code>, раздел Export and lifetime:</p>
+<ul>
+<li>Скопируйте <code>5-telemetry/starter/telemetry.py</code> в <code>solution/src/logtriage/telemetry.py</code>, не меняя его код, добавьте в проект сервера OpenTelemetry Python SDK 1.44.0 и его OTLP/HTTP-экспортёр и установите версию <code>0.5.0</code>.</li>
+<li>Вызывайте <code>configure</code> до создания сервера. Если не задана ни <code>OTEL_EXPORTER_OTLP_ENDPOINT</code>, ни <code>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</code>, он ничего не устанавливает и не делает телеметрических запросов, а stdio работает как раньше.</li>
+<li>Сбрасывайте спаны при любом выходе: EOF на stdin, SIGINT и SIGTERM, по stdio и по HTTP. <code>shutdown</code> сбрасывает после того, как сервер вернул управление, а <code>flush_and_exit</code> — обработчик сигнала для stdio.</li>
+<li>Добавьте собственный тест жизненного цикла с in-memory-экспортёром или локальным приёмником.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>По stdio поток ждёт на stdin, и после сигнала обычный выход ждёт этот поток. Поэтому <code>flush_and_exit</code> сразу завершает процесс после сброса.</li>
+<li>По HTTP uvicorn завершается по SIGINT и SIGTERM и затем снова поднимает сигнал. От обработчика, который вы поставили до его запуска, зависит, выполнится ли сброс после этого.</li>
+<li><code>ConsoleSpanExporter</code> из SDK пишет в stdout, а он по stdio принадлежит сообщениям MCP.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Read the root agent rules and 5-telemetry/AGENTS.md, README.md and CONTRACT.md. Continue the existing server in solution/.
+
+Copy 5-telemetry/starter/telemetry.py to solution/src/logtriage/telemetry.py without changing its code, and add the OpenTelemetry Python SDK 1.44.0 with its OTLP/HTTP protobuf exporter to the project. Set the version to 0.5.0. Call configure before the server is created, and flush on stdin EOF and on SIGINT and SIGTERM over stdio and HTTP with shutdown or flush_and_exit. Keep stdout protocol-only. Write your own lifecycle test. Do not instrument requests or log reads yet.
+
+Checkpoint: the server&#x27;s own tests and uv run --project 5-telemetry/checks pytest 5-telemetry/checks -k t1 pass: FastMCP&#x27;s own request spans are enough for the T1 checks until task 2 replaces them. Commit as &quot;practice 5 task 1: wire in telemetry export&quot; and report the exact checks run.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> ваши собственные тесты проходят, как и проверки T1:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>pytest<span class="w"> </span>solution/tests
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>-k<span class="w"> </span>t1</code></pre></div>
+<p>Проверка выводит:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>5-telemetry/checks/test_t1_export.py ....                                [100%]
+
+======================= 4 passed, 11 deselected in 4.35s =======================</code></pre></div>
+<p>FastMCP сам открывает спан запроса на каждый запрос, поэтому проверки T1 уже видят ваш экспорт и сброс при каждом способе выхода. Задача 2 заменит эти спаны вашими. Падающий случай <code>http-signal</code> означает, что HTTP-сервер завершается раньше, чем сбрасывает спаны.</p>
+<h2 id="3-task-2-request-spans-and-the-callers-trace">3. Задача 2: спаны запросов и трасса вызывающей стороны</h2>
+<div class="callout callout-default"><p>💡 Цель: каждый MCP-запрос порождает один SERVER-спан с именем по конвенциям MCP, внутри трассы вызывающей стороны, если её несёт <code>_meta</code>, а его статус согласуется с результатом.</p>
+</div>
+<p>Собственный спан запроса FastMCP кладёт текст отказа в описание статуса и в событие исключения, а имя берёт из любого инструмента, который запросит вызывающая сторона, зарегистрирован он или нет. Поэтому сервер переключает FastMCP в <code>propagation_only</code> и открывает SERVER-спан в middleware, добавленном первым, который выполняет всё остальное внутри этого спана. В этом режиме FastMCP по-прежнему читает <code>traceparent</code> и <code>tracestate</code> из <code>_meta</code> и делает спан вызывающей стороны текущим до запуска любого middleware, так что спан, который открывает ваше middleware, становится его дочерним.</p>
+<p>Реализуйте правила из <code>5-telemetry/CONTRACT.md</code>, разделы Request spans и Context and caller:</p>
+<ul>
+<li>Установите в сервере режим телеметрии FastMCP <code>propagation_only</code>.</li>
+<li>Один SERVER-спан на каждый обработанный запрос, ни одного на уведомления. Называйте его <code>tools/call &lt;tool&gt;</code> или <code>prompts/get &lt;prompt&gt;</code>, если сервер зарегистрировал такое имя, и просто методом в остальных случаях.</li>
+<li>Задайте атрибуты из таблицы контракта: <code>mcp.method.name</code> всегда, <code>gen_ai.tool.name</code> и <code>gen_ai.operation.name</code> со значением <code>execute_tool</code> при вызове инструмента, <code>gen_ai.prompt.name</code> для промпта, <code>mcp.resource.uri</code> после успешного чтения ресурса.</li>
+<li>Результат с <code>isError: true</code> получает статус ERROR и <code>error.type</code>, равный <code>tool_error</code>. Ошибка JSON-RPC получает свой код как <code>error.type</code>, кроме ошибок запроса, которые перечисляет контракт. У успеха <code>error.type</code> нет.</li>
+<li>Оставьте описание статуса пустым или кладите туда только дополнительные подробности, не содержащие ввода вызывающей стороны: <code>error.type</code> уже называет сбой, а текст отказа может повторять путь или ID скана, присланные вызывающей стороной.</li>
+<li>На уровне debug при включённой телеметрии добавьте в строку <code>tool=</code> значение <code>trace_id=</code> и 32 шестнадцатеричные цифры трассы. Без телеметрии строка остаётся прежней.</li>
+<li>Сделайте строковые значения <code>traceparent</code> и <code>tracestate</code> из <code>params._meta</code> родителем спана запроса, по stdio и по HTTP. Их извлекает режим <code>propagation_only</code> в FastMCP. HTTP-заголовки трассировки не читайте.</li>
+<li>Если корректного контекста нет, начните новую трассу. Если родитель не семплирован, передайте контекст дальше и ничего не записывайте.</li>
+<li>Запрос без <code>params</code> или без <code>_meta</code> обрабатывается как раньше.</li>
+<li>Держите аутентифицированного вызывающего в контексте и не кладите состояние трассы в сохранённые сканы: два запроса с одним <code>scan_id</code> — это две трассы.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Отказ доходит до <code>on_request</code> как исключение, а в результат с <code>isError</code> его превращает FastMCP уже после возврата из middleware: <code>ToolError</code>, <code>NotFoundError</code> для неизвестного инструмента, <code>ValidationError</code> для отказа по схеме. <code>NotFoundError</code> не является <code>FastMCPError</code>. Здесь все три дают <code>tool_error</code>, хотя по конвенциям вызов неизвестного инструмента сбоем не считается. На отсутствующие аргументы промпта FastMCP отвечает <code>-32603</code>, кодом внутренней ошибки, хотя ошибку допустила вызывающая сторона. Считайте этот <code>-32603</code> вместе с ошибками запроса.</li>
+<li>FastMCP запускает middleware в том порядке, в каком вы их добавили. От порядка зависит, выполняются ли логгер и инструменты внутри спана запроса.</li>
+<li>Запрос без params приходит в <code>on_request</code> обычным словарём, а имя инструмента или промпта может прийти не строкой. Читайте имя инструмента или промпта, только если это строка.</li>
+<li>В режиме <code>propagation_only</code> собственный <code>get_tracer()</code> из FastMCP возвращает трассировщик, который ничего не записывает. Открывайте свои спаны трассировщиком из <code>trace.get_tracer</code> OpenTelemetry в текущем контексте, куда FastMCP уже положил спан вызывающей стороны. <code>start_as_current_span</code> этого трассировщика по умолчанию записывает событие исключения и описание статуса из текста исключения. Выключите и то и другое через <code>record_exception=False</code> и <code>set_status_on_exception=False</code>.</li>
+<li>Собственный клиент FastMCP заменяет <code>traceparent</code>, который ваш тест кладёт в <code>_meta</code>, своим. Проверяйте контекст через сырой JSON-RPC, например отправляя запросы в <code>http_app()</code> сервера через <code>httpx2.ASGITransport</code>, который MCP SDK уже устанавливает.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Follow 5-telemetry/CONTRACT.md&#x27;s request-span, logging and context rules. Switch FastMCP to its propagation_only telemetry mode, so it opens no request spans of its own, and add FastMCP middleware that creates one SERVER span per dispatched request, skips notifications, names registered tools and prompts safely, and records the required attributes. Distinguish tool errors, JSON-RPC server failures and invalid requests. Add trace_id to the existing debug tool-call line while telemetry is enabled. Keep the middleware outside logging and handler work. Make string traceparent and tracestate from params._meta the request span&#x27;s parent, over stdio and HTTP: FastMCP&#x27;s propagation_only mode extracts them before your middleware runs. Follow the contract&#x27;s default sampling behavior. Missing or invalid context starts a new trace, and a request that has no params or no _meta at all is still answered as before. Do not read HTTP trace headers or store any context or span in a scan handle. Add focused tests for span names and errors, sampled and unsampled parents and independent requests that reuse a scan, without changing the public MCP results.
+
+Checkpoint: uv run --project 5-telemetry/checks pytest 5-telemetry/checks -k &#x27;t1 or t2&#x27; passes, as do the server&#x27;s own tests. Commit as &quot;practice 5 task 2: trace MCP requests and caller context&quot; and report the exact checks run.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> проверки T1 и T2 проходят:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>-k<span class="w"> </span><span class="s1">'t1 or t2'</span></code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>5-telemetry/checks/test_t1_export.py ....                                [ 40%]
+5-telemetry/checks/test_t2_context.py .....                              [ 90%]
+5-telemetry/checks/test_t2_spans.py .                                    [100%]
+
+====================== 10 passed, 5 deselected in 10.83s =======================</code></pre></div>
+<h2 id="4-task-3-reading">4. Задача 3: чтение</h2>
+<div class="callout callout-default"><p>💡 Цель: трасса вызова инструмента показывает каждый прочитанный им файл и работу, которую выполнило каждое чтение.</p>
+</div>
+<p>Работа внутри запроса превращается в дочерние INTERNAL-спаны с атрибутами под вашим собственным префиксом, чтобы у медленной части вызова было имя.</p>
+<p>Реализуйте правила из <code>5-telemetry/CONTRACT.md</code>, раздел Read spans:</p>
+<ul>
+<li>Один INTERNAL-спан <code>logtriage.read</code> на каждый открытый ридер распакованных данных, завершаемый при закрытии этого ридера. Считаются определение формата, обычные чтения, повторные чтения сохранённых сканов и проверка свидетельств в <code>save_finding</code>. Отклонённый путь ничего не открывает и read-спана не имеет.</li>
+<li><code>logtriage.files</code>, <code>logtriage.bytes</code> и <code>logtriage.lines</code> в том виде, как их определяет контракт: потреблённая работа, включая определение формата и упреждающее чтение.</li>
+<li>Продолжайте обрабатывать по одному файлу за раз и не пускайте пути файлов и содержимое ни в один спан.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Считайте байты после распаковки gzip и до декодирования текста или обрезки. Размер сжатых данных отвечает на другой вопрос.</li>
+<li>Ридер берёт по 64 КиБ за раз, поэтому чтение при определении формата возвращает больше байтов, чем строк, на которые оно смотрит. Эти байты — тоже работа.</li>
+<li>Генератор, читающий файл, закрывает свой ридер, когда исчерпан или отброшен. Откройте read-спан через <code>start_span</code> и завершите его при закрытии ридера, а не делайте его текущим поперёк <code>yield</code>.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Add per-file INTERNAL logtriage.read spans around opened decompressed readers, including detection and stored-scan rereads. Measure actual bytes and line records consumed and file-read operations exactly as 5-telemetry/CONTRACT.md defines them. These spans are children of the current request. Keep one-file-at-a-time processing, rooted access and existing results unchanged. Do not export file paths or content. Add small deterministic tests of plain and gzip reads and partial/unterminated data.
+
+Checkpoint: uv run --project 5-telemetry/checks pytest 5-telemetry/checks -k &#x27;t1 or t2 or t3&#x27; passes, as do the server&#x27;s own tests. Commit as &quot;practice 5 task 3: measure read work&quot; and report the exact checks run.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> проверки с T1 по T3 проходят:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>-k<span class="w"> </span><span class="s1">'t1 or t2 or t3'</span></code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>5-telemetry/checks/test_t1_export.py ....                                [ 30%]
+5-telemetry/checks/test_t2_context.py .....                              [ 69%]
+5-telemetry/checks/test_t2_spans.py .                                    [ 76%]
+5-telemetry/checks/test_t3_reads.py ...                                  [100%]
+
+====================== 13 passed, 2 deselected in 14.01s =======================</code></pre></div>
+<h2 id="5-task-4-what-stays-out">5. Задача 4: что не должно попадать в спаны</h2>
+<div class="callout callout-default"><p>💡 Цель: экспортируемые спаны объясняют сбои, не неся ввод вызывающей стороны, результат или учётные данные.</p>
+</div>
+<p>Аргументы и результаты — это атрибуты по желанию, а токен на спан не попадает никогда, поэтому экспортируемая запись несёт имена, идентификаторы и счётчики.</p>
+<p>Реализуйте правила из <code>5-telemetry/CONTRACT.md</code>, раздел Privacy:</p>
+<ul>
+<li>Проверяйте всю экспортируемую запись: ресурс, атрибуты, события и описания статусов.</li>
+<li>По HTTP задавайте <code>enduser.id</code> — атрибут OpenTelemetry для аутентифицированного пользователя — равным принципалу. Никогда не копируйте bearer-токен или заголовок <code>Authorization</code>.</li>
+<li>Записывайте URI ресурса, только если чтение прошло успешно. URI, который сервер отклонил, остаётся снаружи, какой бы вид он ни имел.</li>
+<li>Скрытые ошибки MCP остаются скрытыми. Необязательное событие исключения несёт фиксированное описание, а не сырую ошибку. Это строже, чем позволить спану сбоя нести своё исключение для тех, кто читает трассы, потому что ошибка Log Triage может повторять путь или ID скана, присланные вызывающей стороной, а значения аргументов в спаны не попадают.</li>
+<li>Проверьте с пишущей стороной и вызывающим только для чтения, а также с неожиданным сбоем из-за недоступной для записи папки отчётов.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Сообщение об отказе может повторять путь или ID скана, присланные вызывающей стороной. Копирование его в описание статуса сводит на нет аккуратный список атрибутов.</li>
+<li>У событий исключений есть собственные поля. Проверяйте и их, а не только атрибуты спана.</li>
+<li>Тестируйте с выдуманными маркерами, которые легко узнать, а потом ищите их во всём захваченном экспорте. Настоящие секреты в тестовые данные не кладите.</li>
+<li>По HTTP MCP SDK перед <code>tools/call</code> с аргументами шлёт вашему серверу собственный <code>tools/list</code>, чтобы сверить заголовки вызова со схемой инструмента. Он приходит с заголовком вызова <code>Mcp-Method: tools/call</code>: спан для него не открывайте.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Verify the full exported payload against 5-telemetry/CONTRACT.md&#x27;s privacy rules: safe protocol metadata and counts only, no arbitrary arguments, results, raw input-bearing errors, bearer tokens, Authorization values or OTLP credentials. Check attributes, events and status descriptions. Keep masked MCP errors unchanged. Record the authenticated HTTP principal as enduser.id, not the token. Add tests for writer/read-only callers and unexpected failures, fixing any leaks without weakening existing path or ownership checks.
+
+Checkpoint: uv run --project 5-telemetry/checks pytest 5-telemetry/checks passes, as do the server&#x27;s own tests. Commit as &quot;practice 5 task 4: verify telemetry privacy&quot; and report the exact checks run.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> проходит весь набор проверок практики 5:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>5-telemetry/checks/test_t1_export.py ....                                [ 26%]
+5-telemetry/checks/test_t2_context.py .....                              [ 60%]
+5-telemetry/checks/test_t2_spans.py .                                    [ 66%]
+5-telemetry/checks/test_t3_reads.py ...                                  [ 86%]
+5-telemetry/checks/test_t4_privacy.py ..                                 [100%]
+
+============================= 15 passed in 16.03s ==============================</code></pre></div>
+<p>Эти проверки не вызывают неожиданного сбоя, поэтому показать скрытую ошибку — дело ваших собственных тестов. Запустите свои тесты ещё раз.</p>
+<h2 id="6-task-5-a-trace-backend">6. Задача 5: бэкенд для трасс</h2>
+<div class="callout callout-default"><p>💡 Цель: настоящий вызов инструмента появляется в LangSmith как tool run с его read runs, а в локальном просмотрщике — со своими счётчиками.</p>
+</div>
+<p>Экспортёр отправляет данные в один endpoint, а LangSmith отбрасывает атрибуты спанов, которые не сопоставляет, поэтому дерево запусков берётся из LangSmith, а счётчики и типы ошибок — из локального просмотрщика.</p>
+<p>Терминалы A и B работают в корне репозитория: A — для локального просмотрщика, B — для сервера, а терминал C работает в <code>5-telemetry/</code> для Inspector.</p>
+<h3 id="langsmith">LangSmith</h3>
+<p>Создайте аккаунт LangSmith и API-ключ в настройках API Keys: оставьте тип Personal Access Token и выберите срок действия. Endpoint ниже использует американский хост <code>api.smith.langchain.com</code>: аккаунту в европейском регионе нужен <code>eu.api.smith.langchain.com</code>.</p>
+<p>Ключ — это пароль от вашего аккаунта LangSmith, поэтому храните его там, где хранят пароли, — в хранилище учётных данных системы: в Keychain на macOS, в связке ключей рабочего стола на Linux, а в Windows — в SecretStore, зашифрованном файле-хранилище для вашего пользователя, которым управляет PowerShell. Файл <code>.env</code> хранил бы ключ открытым текстом в одном <code>git add</code> от коммита. Сохраните ключ один раз:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run once, in any terminal.</span>
+<span class="c1"># macOS: your login Keychain; asks twice and shows nothing</span>
+security<span class="w"> </span>add-generic-password<span class="w"> </span>-a<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w"> </span>-s<span class="w"> </span>langsmith-api-key<span class="w"> </span>-w
+
+<span class="c1"># Linux: your desktop keyring; asks once and shows nothing</span>
+secret-tool<span class="w"> </span>store<span class="w"> </span>--label<span class="o">=</span>langsmith-api-key<span class="w"> </span>service<span class="w"> </span>langsmith-api-key<span class="w"> </span>account<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+
+<span class="c1"># Windows (PowerShell): install PowerShell 7 once, then in a new pwsh window install Microsoft's secret modules, let the vault open without a password and store the key</span>
+winget<span class="w"> </span>install<span class="w"> </span>--id<span class="w"> </span>Microsoft.PowerShell<span class="w"> </span>--source<span class="w"> </span>winget
+Install-Module<span class="w"> </span>Microsoft.PowerShell.SecretManagement,<span class="w"> </span>Microsoft.PowerShell.SecretStore<span class="w"> </span>-Scope<span class="w"> </span>CurrentUser
+Register-SecretVault<span class="w"> </span>-Name<span class="w"> </span>SecretStore<span class="w"> </span>-ModuleName<span class="w"> </span>Microsoft.PowerShell.SecretStore<span class="w"> </span>-DefaultVault
+Set-SecretStoreConfiguration<span class="w"> </span>-Authentication<span class="w"> </span>None
+Set-Secret<span class="w"> </span>-Name<span class="w"> </span>langsmith-api-key</code></pre></div>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Проблемы с хранилищем ключей</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ul>
+<li>macOS: если в вашей Keychain уже есть элемент <code>langsmith-api-key</code>, команда дважды спросит ключ и остановится с сообщением <code>The specified item already exists in the keychain.</code> Удалите старый элемент командой <code>security delete-generic-password -a &quot;$USER&quot; -s langsmith-api-key</code>, затем сохраните новый ключ.</li>
+<li>Linux: <code>secret-tool</code> входит в пакет <code>libsecret-tools</code> в Debian и Ubuntu (<code>sudo apt install libsecret-tools</code>) и в <code>libsecret</code> в Fedora, и ему нужна сессия рабочего стола с GNOME Keyring или KWallet, разблокированным при входе.</li>
+<li>Windows: PowerShell 7 (<code>pwsh</code>, 7.3 или новее) ставится рядом с Windows PowerShell, который идёт в составе Windows, и каждая строка для Windows в этом задании выполняется в нём. Microsoft теперь поддерживает оба модуля секретов только ради исправлений безопасности и критических ошибок. Если SecretStore уже хранит ваш секрет таким образом, выполните только строку <code>Set-Secret</code>.</li>
+<li>Windows: <code>Set-SecretStoreConfiguration -Authentication None</code> просит подтверждения, затем создаёт зашифрованный файл-хранилище и дважды спрашивает новый пароль к нему. После этого ни одна сессия PowerShell больше не спрашивает пароль, так что новому терминалу хватает одной строки, чтобы загрузить ключ. Документация Microsoft не советует эту настройку для важных секретов, а этот ключ предназначен для бесплатного проекта LangSmith, истекает в выбранную вами дату и удаляется при уборке в конце. <code>Set-Secret</code> затем показывает только звёздочки, пока вы вставляете ключ.</li>
+</ul>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>Убедитесь, что ключ сохранён. Проверка печатает <code>stored</code> только если элемент существует, и никогда не печатает сам ключ:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run in any terminal.</span>
+<span class="c1"># macOS</span>
+security<span class="w"> </span>find-generic-password<span class="w"> </span>-a<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w"> </span>-s<span class="w"> </span>langsmith-api-key<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>stored
+
+<span class="c1"># Linux</span>
+secret-tool<span class="w"> </span>lookup<span class="w"> </span>service<span class="w"> </span>langsmith-api-key<span class="w"> </span>account<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>stored
+
+<span class="c1"># Windows (PowerShell)</span>
+<span class="k">if</span><span class="w"> </span><span class="o">(</span>Get-SecretInfo<span class="w"> </span>-Name<span class="w"> </span>langsmith-api-key<span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="s1">'stored'</span><span class="w"> </span><span class="o">}</span></code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>stored</code></pre></div>
+<p>В терминале B загрузите ключ из хранилища в <code>LANGSMITH_API_KEY</code>. Переменная живёт столько же, сколько терминал, поэтому в новом терминале эту строку нужно выполнить снова:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, terminal B.</span>
+<span class="c1"># macOS</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_API_KEY</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>security<span class="w"> </span>find-generic-password<span class="w"> </span>-a<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w"> </span>-s<span class="w"> </span>langsmith-api-key<span class="w"> </span>-w<span class="k">)</span><span class="s2">"</span>
+
+<span class="c1"># Linux</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LANGSMITH_API_KEY</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>secret-tool<span class="w"> </span>lookup<span class="w"> </span>service<span class="w"> </span>langsmith-api-key<span class="w"> </span>account<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
+
+<span class="c1"># Windows (PowerShell)</span>
+<span class="nv">$env</span>:LANGSMITH_API_KEY<span class="w"> </span><span class="o">=</span><span class="w"> </span>Get-Secret<span class="w"> </span>-Name<span class="w"> </span>langsmith-api-key<span class="w"> </span>-AsPlainText</code></pre></div>
+<p>Затем загрузите примеры токенов, задайте переменные экспортёра и запустите сервер по HTTP:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, terminal B.</span>
+<span class="c1"># macOS and Linux</span>
+<span class="nb">set</span><span class="w"> </span>-a
+.<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env
+<span class="nb">set</span><span class="w"> </span>+a
+<span class="nb">unset</span><span class="w"> </span>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT<span class="w"> </span>OTEL_EXPORTER_OTLP_TRACES_HEADERS
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>https://api.smith.langchain.com/otel
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_SERVICE_NAME</span><span class="o">=</span>log-triage
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_HEADERS</span><span class="o">=</span><span class="s2">"x-api-key=</span><span class="nv">$LANGSMITH_API_KEY</span><span class="s2">,Langsmith-Project=LogTriagePractice"</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>log-triage<span class="w"> </span>--root<span class="w"> </span>s3_logs<span class="w"> </span>--reports<span class="w"> </span>reports<span class="w"> </span>--http<span class="w"> </span><span class="m">127</span>.0.0.1:8765<span class="w"> </span>--log-level<span class="w"> </span>debug
+
+<span class="c1"># Windows (PowerShell)</span>
+Get-Content<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>ForEach-Object<span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">$_</span><span class="w"> </span>-match<span class="w"> </span><span class="s1">'^(\w+)=(.*)$'</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>Set-Item<span class="w"> </span>-Path<span class="w"> </span><span class="s2">"Env:</span><span class="k">$(</span><span class="nv">$Matches</span><span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span>-Value<span class="w"> </span><span class="nv">$Matches</span><span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">}</span>
+Remove-Item<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_TRACES_HEADERS<span class="w"> </span>-ErrorAction<span class="w"> </span>Ignore
+<span class="nv">$env</span>:OTEL_EXPORTER_OTLP_ENDPOINT<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'https://api.smith.langchain.com/otel'</span>
+<span class="nv">$env</span>:OTEL_SERVICE_NAME<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'log-triage'</span>
+<span class="nv">$env</span>:OTEL_EXPORTER_OTLP_HEADERS<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"x-api-key=</span><span class="nv">$env</span><span class="s2">:LANGSMITH_API_KEY,Langsmith-Project=LogTriagePractice"</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>log-triage<span class="w"> </span>--root<span class="w"> </span>s3_logs<span class="w"> </span>--reports<span class="w"> </span>reports<span class="w"> </span>--http<span class="w"> </span><span class="m">127</span>.0.0.1:8765<span class="w"> </span>--log-level<span class="w"> </span>debug</code></pre></div>
+<p>Оставьте его работать. Хост только подключается к этому серверу, поэтому настройки экспортёра относятся к этому терминалу.</p>
+<p>В терминале C сделайте один вызов:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from 5-telemetry/, terminal C.</span>
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>--cli<span class="w"> </span>--config<span class="w"> </span>inspector.json<span class="w"> </span>--server<span class="w"> </span>log-triage-http<span class="w"> </span>--method<span class="w"> </span>tools/call<span class="w"> </span>--tool-name<span class="w"> </span>list_logs<span class="w"> </span>--tool-arg<span class="w"> </span><span class="nv">path</span><span class="o">=</span>.<span class="w"> </span>--tool-arg<span class="w"> </span><span class="nv">limit</span><span class="o">=</span><span class="m">2</span><span class="w"> </span>--format<span class="w"> </span>json</code></pre></div>
+<p>В течение нескольких секунд в проекте <code>LogTriagePractice</code> появится запуск типа tool с именем <code>list_logs</code> и двумя запусками <code>logtriage.read</code> под ним. Каждая команда Inspector открывает свою сессию, поэтому <code>server/discover</code> и <code>tools/list</code> появятся запусками рядом с ним: отфильтруйте по типу запуска tool.</p>
+<p>LangSmith сохраняет имя каждого спана, длительность, ID, а также имя и версию сервиса, создаёт tool run и имя инструмента из <code>gen_ai.tool.name</code> и отбрасывает атрибуты, которые не сопоставляет. Счётчики <code>logtriage.*</code> и <code>error.type</code> до него не доходят, а отклонённый вызов инструмента на этом сервере выглядит там как успешный запуск: LangSmith помечает запуск как ошибку, только если у его спана есть событие исключения, а у спана отказа здесь его нет.</p>
+<h3 id="local-viewer">Локальный просмотрщик</h3>
+<p>Локальный просмотрщик — это OTLP-приёмник в <code>5-telemetry/checks/</code>, который печатает полученные спаны в виде дерева, и аккаунт ему не нужен. Остановите сервер через Ctrl+C, чтобы он сбросил спаны. В терминале A:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, terminal A.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span><span class="m">5</span>-telemetry/checks/tracetail.py</code></pre></div>
+<p>Он печатает <code>OTLP receiver: http://127.0.0.1:4318/v1/traces (Ctrl-C to stop)</code>. Если порт 4318 занят, добавьте <code>--port</code> со свободным портом и используйте его в endpoint ниже.</p>
+<p>В терминале B направьте сервер на просмотрщик и запустите его снова:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, terminal B.</span>
+<span class="c1"># macOS and Linux</span>
+<span class="nb">unset</span><span class="w"> </span>OTEL_EXPORTER_OTLP_HEADERS
+<span class="nb">export</span><span class="w"> </span><span class="nv">OTEL_EXPORTER_OTLP_ENDPOINT</span><span class="o">=</span>http://127.0.0.1:4318
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>log-triage<span class="w"> </span>--root<span class="w"> </span>s3_logs<span class="w"> </span>--reports<span class="w"> </span>reports<span class="w"> </span>--http<span class="w"> </span><span class="m">127</span>.0.0.1:8765<span class="w"> </span>--log-level<span class="w"> </span>debug
+
+<span class="c1"># Windows (PowerShell)</span>
+Remove-Item<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_HEADERS<span class="w"> </span>-ErrorAction<span class="w"> </span>Ignore
+<span class="nv">$env</span>:OTEL_EXPORTER_OTLP_ENDPOINT<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'http://127.0.0.1:4318'</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>log-triage<span class="w"> </span>--root<span class="w"> </span>s3_logs<span class="w"> </span>--reports<span class="w"> </span>reports<span class="w"> </span>--http<span class="w"> </span><span class="m">127</span>.0.0.1:8765<span class="w"> </span>--log-level<span class="w"> </span>debug</code></pre></div>
+<p>Повторите вызов Inspector в терминале C.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Общий endpoint — это базовый URL. Если дописать к нему <code>/v1/traces</code>, экспортёр добавит путь дважды, и LangSmith ответит 404.</li>
+<li>Спаны уходят пакетами. Подождите несколько секунд или остановите сервер штатно, пока бэкенд ещё работает.</li>
+<li>Сервер читает переменные <code>OTEL_</code> один раз, при запуске. После смены endpoint или заголовков в терминале B перезапустите сервер до следующего вызова.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> в LangSmith у <code>LogTriagePractice</code> есть tool run <code>list_logs</code> с двумя запусками <code>logtriage.read</code> под ним. Просмотрщик печатает тот же вызов деревом, по одной строке на спан, рядом с запросами сессии Inspector. Каждый раз, когда приходит пакет, он снова печатает все спаны, которые у него есть, поэтому считайте каждый ID спана один раз. Из реального запуска, с сокращением <code>...</code>:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Snapshot: 6 spans, buffered across batches
+...
+tools/call list_logs SPAN_KIND_SERVER 9.963 ms trace=51b22f91... span=86b8770e... parent= status=STATUS_CODE_UNSET attrs=map[enduser.id:analyst gen_ai.operation.name:execute_tool gen_ai.tool.name:list_logs mcp.method.name:tools/call] ...
+  logtriage.read SPAN_KIND_INTERNAL 0.549 ms trace=51b22f91... span=60e01c28... parent=86b8770e... status=STATUS_CODE_UNSET attrs=map[logtriage.bytes:65536 logtriage.files:1 logtriage.lines:1131] ...
+  logtriage.read SPAN_KIND_INTERNAL 0.326 ms trace=51b22f91... span=514ef225... parent=86b8770e... status=STATUS_CODE_UNSET attrs=map[logtriage.bytes:65536 logtriage.files:1 logtriage.lines:1131] ...</code></pre></div>
+<p>Длительности и ID в вашем запуске будут другими. Когда и LangSmith, и просмотрщик покажут вызов, отметьте первый пункт Manual evidence в <code>CHECKLIST.md</code>.</p>
+<h2 id="7-task-6-the-case-with-telemetry-on">7. Задача 6: кейс с включённой телеметрией</h2>
+<div class="callout callout-default"><p>💡 Цель: сохранённый вывод отвечает на вопрос с подтверждёнными свидетельствами, а трасса показывает, во что расследование обошлось серверу.</p>
+</div>
+<p>Хост мало что показывает о медленном вызове или о работе за ответом, поэтому именно трасса делает эту цену видимой.</p>
+<p>Остановите сервер в терминале B через Ctrl+C и снова запустите его для LangSmith командами терминала B из раздела LangSmith задачи 5. Затем зарегистрируйте работающий сервер в одном хосте под новым именем <code>log-triage-telemetry</code>, чтобы уже имеющаяся регистрация <code>log-triage</code> осталась как есть.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Claude Code</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, host terminal.</span>
+<span class="c1"># macOS and Linux</span>
+<span class="nb">set</span><span class="w"> </span>-a
+.<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env
+<span class="nb">set</span><span class="w"> </span>+a
+claude<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>--scope<span class="w"> </span>project<span class="w"> </span>--transport<span class="w"> </span>http<span class="w"> </span>log-triage-telemetry<span class="w"> </span>http://127.0.0.1:8765/mcp<span class="w"> </span>--header<span class="w"> </span><span class="s1">'Authorization: Bearer ${LOG_TRIAGE_TOKEN}'</span>
+claude<span class="w"> </span>--tools<span class="w"> </span><span class="s2">""</span>
+
+<span class="c1"># Windows (PowerShell)</span>
+Get-Content<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>ForEach-Object<span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">$_</span><span class="w"> </span>-match<span class="w"> </span><span class="s1">'^(\w+)=(.*)$'</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>Set-Item<span class="w"> </span>-Path<span class="w"> </span><span class="s2">"Env:</span><span class="k">$(</span><span class="nv">$Matches</span><span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span>-Value<span class="w"> </span><span class="nv">$Matches</span><span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">}</span>
+claude<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>--scope<span class="w"> </span>project<span class="w"> </span>--transport<span class="w"> </span>http<span class="w"> </span>log-triage-telemetry<span class="w"> </span>http://127.0.0.1:8765/mcp<span class="w"> </span>--header<span class="w"> </span><span class="s1">'Authorization: Bearer ${LOG_TRIAGE_TOKEN}'</span>
+claude<span class="w"> </span>--tools<span class="w"> </span><span class="s2">""</span></code></pre></div>
+<p>Одинарные кавычки оставляют <code>${LOG_TRIAGE_TOKEN}</code> как написано, в том числе и в PowerShell, так что сам токен не сохраняется. <code>--tools &quot;&quot;</code> убирает только встроенные инструменты Claude Code: если <code>/mcp</code> показывает другие MCP-серверы, кроме <code>log-triage-telemetry</code>, отключите их там для этого проекта, а когда закончите, включите обратно тем же способом. Подтвердите новый сервер, когда Claude Code спросит.</p>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Codex</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, host terminal.</span>
+<span class="c1"># macOS and Linux</span>
+<span class="nb">set</span><span class="w"> </span>-a
+.<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env
+<span class="nb">set</span><span class="w"> </span>+a
+codex<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>log-triage-telemetry<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8765/mcp<span class="w"> </span>--bearer-token-env-var<span class="w"> </span>LOG_TRIAGE_TOKEN
+
+<span class="c1"># Windows (PowerShell)</span>
+Get-Content<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>ForEach-Object<span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="nv">$_</span><span class="w"> </span>-match<span class="w"> </span><span class="s1">'^(\w+)=(.*)$'</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"> </span>Set-Item<span class="w"> </span>-Path<span class="w"> </span><span class="s2">"Env:</span><span class="k">$(</span><span class="nv">$Matches</span><span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span>-Value<span class="w"> </span><span class="nv">$Matches</span><span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">}</span>
+codex<span class="w"> </span>mcp<span class="w"> </span>add<span class="w"> </span>log-triage-telemetry<span class="w"> </span>--url<span class="w"> </span>http://127.0.0.1:8765/mcp<span class="w"> </span>--bearer-token-env-var<span class="w"> </span>LOG_TRIAGE_TOKEN</code></pre></div>
+<p>Это добавляет регистрацию на уровне пользователя в <code>~/.codex/config.toml</code> (<code>$HOME\.codex\config.toml</code> в Windows). Чтобы Codex спрашивал перед запуском <code>save_finding</code>, добавьте эту строку в новую таблицу <code>[mcp_servers.log-triage-telemetry]</code> файла:</p>
+<div class="code"><div class="code-head"><span class="code-lang">toml</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="n">default_tools_approval_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"writes"</span></code></pre></div>
+<p>Затем запустите Codex из того же терминала:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, host terminal.</span>
+codex<span class="w"> </span>--no-daemon</code></pre></div>
+<p>Обычно Codex подключается к своим серверам через фоновый сервер, который сохраняет окружение с момента своего запуска, поэтому <code>--no-daemon</code> запускает сессию без него, и токен берётся из этого терминала. Проверьте <code>/mcp</code> в новой сессии. У Codex остаются его инструменты оболочки и файлов, поэтому попросите его использовать только инструменты этого сервера и проверьте в транскрипте, нет ли прямого чтения <code>s3_logs/</code>.</p>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Исправление регистрации</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><p>Если адрес или имя неверны, выйдите из хоста и удалите только запись упражнения, затем повторите её команду добавления с нужными значениями:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root, Claude Code registration.</span>
+claude<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>log-triage-telemetry<span class="w"> </span>--scope<span class="w"> </span>project</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from any folder, Codex registration.</span>
+codex<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>log-triage-telemetry</code></pre></div>
+<p>Файлы проекта и сохранённые выводы остаются на месте.</p>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><h3 id="run-the-investigation">Проведите расследование</h3>
+<ol>
+<li>
+<p>В Claude Code запустите промпт сервера <code>triage</code> с симптомом из одного слова и местом, где искать: <code>/mcp__log-triage-telemetry__triage certificate-orders pods</code>. Claude Code делит аргументы по пробелам, поэтому симптом из нескольких слов расползётся по другим аргументам. В Codex попросите расследовать <code>pods</code>, используя только инструменты этого сервера.</p>
+</li>
+<li>
+<p>Когда агент ответил на промпт, задайте вопрос, слово в слово:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Certificate orders were failing at some point. When did it start, is it still happening, and do the CI results agree?</code></pre></div>
+</li>
+<li>
+<p>Прежде чем доверять ответу, проверьте его источники: откройте в файлах не менее трёх процитированных строк и сравните даты в первых строках каждого файла с датой в его имени.</p>
+</li>
+<li>
+<p>Прочитайте, что агент хочет записать, прежде чем разрешить <code>save_finding</code>. Вывод, который засчитывается, отвечает на вопрос, поэтому если агент сохранил вывод, пока выполнял промпт, или остановился, не сохранив, попросите его сохранить свой вывод.</p>
+</li>
+<li>
+<p>Сравните этот вывод в <code>reports/</code> с разделом «A good finding» в <code>4-agents-and-clients/cases.md</code>.</p>
+</li>
+</ol>
+<p>Необязательный вопрос работает так же, в новой сессии:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>The 14:00 CI run on 2026-09-02 had hundreds of errors. Why?</code></pre></div>
+<p>Затем ответьте на вопросы по трассе о расследовании обязательного вопроса и запишите их в <code>5-telemetry/CHECKLIST.md</code>. В LangSmith отфильтруйте <code>LogTriagePractice</code> по типу запуска tool и времени этой сессии. Для счётчиков перезапустите сервер на локальный просмотрщик, как в задаче 5, и повторите самый долгий вызов через Inspector с его аргументами из транскрипта хоста. Для одних и тех же аргументов счётчики одинаковы.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Вопрос</th>
+<th>Что записать</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>Сколько вызовов инструментов сделало расследование и какой из них занял больше всего времени</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>Для этого вызова: его чтения файлов и распакованные байты, а также доля его времени в запусках <code>logtriage.read</code></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Свяжите вопрос с его вызовами инструментов через транскрипт хоста. Спаны сервера не несут ход хоста.</li>
+<li>Держите выводы в рамках свидетельств: записанная в логе причина сбоя — это не наблюдаемая первопричина или исправление.</li>
+<li>Если хост присылает свой контекст трассировки, родителем становится спан хоста. LangSmith отбрасывает спан, чей родитель до него так и не дошёл, а локальный просмотрщик показывает родителя как внешнего.</li>
+<li>Перезапущенный сервер не хранит ни одного скана сессии. Если самый долгий вызов использовал повторно <code>scan_id</code>, сначала повторите вызов <code>summarize_logs</code>, который его создал, а затем самый долгий вызов с новым <code>scan_id</code>.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверьте:</strong> вывод в <code>reports/</code> отвечает на каждую часть вопроса с подтверждающими ссылками на файлы и строки, транскрипт показывает в расследовании только инструменты <code>log-triage-telemetry</code>, а Q1 и Q2 называют запуски из вашей сессии.</p>
+<h2 id="8-check-your-work">8. Проверьте свою работу</h2>
+<p>Из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>pytest<span class="w"> </span>solution/tests
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">5</span>-telemetry/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">5</span>-telemetry/checks</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>...
+============================= 121 passed in 3.00s ==============================
+...
+============================= 15 passed in 16.03s ==============================</code></pre></div>
+<p>Проверки практики 5 запускают ваш сервер командой <code>uv run --project solution log-triage</code> по stdio или со своими адресом <code>--http</code> и токенами, направляют его на собственный OTLP-приёмник на свободном локальном порту и читают то, что пришло. Один файл на каждую задачу построения, два для задачи 2:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Файл</th>
+<th>Что проверяет</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_t1_export.py</code></td>
+<td>нет экспорта без endpoint, имя и версия сервиса, сброс при EOF на stdin, при SIGTERM по stdio и при SIGTERM по HTTP</td>
+</tr>
+<tr>
+<td><code>test_t2_spans.py</code></td>
+<td>один SERVER-спан на запрос с его именем и <code>mcp.method.name</code>, <code>tool_error</code> и ERROR для отклонённого вызова, неверные аргументы промпта не считаются сбоем, URI выданного ресурса, trace ID в строке <code>tool=</code></td>
+</tr>
+<tr>
+<td><code>test_t2_context.py</code></td>
+<td>родитель вызывающей стороны и <code>tracestate</code> по stdio и HTTP, ничего не экспортируется для не семплированного родителя, а вызов без контекста по-прежнему экспортируется, новая трасса на каждый запрос при повторном использовании скана, <code>ping</code> без <code>params</code> получает ответ</td>
+</tr>
+<tr>
+<td><code>test_t3_reads.py</code></td>
+<td>точные счётчики чтения на небольших обычных и gzip-файлах, записи строк во всех байтах, которые вернуло определение формата для более длинного файла, меньше байтов при поиске по сохранённому скану, нет read-спана под спаном запроса с отклонённым путём</td>
+</tr>
+<tr>
+<td><code>test_t4_privacy.py</code></td>
+<td>ни токена, ни маркера аргумента, ни текста результата, ни отклонённого URI ресурса нигде в экспорте, <code>enduser.id</code> для пишущей стороны и вызывающего только для чтения</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>CHECKLIST.md</code> оценивает бэкенд, кейс и вопросы по трассе.</p>
+</div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title">✅ Чек-лист перед отправкой</div><p>Те же пункты есть в <code>5-telemetry/CHECKLIST.md</code>. Отмечайте каждый пункт, когда он выполнен, затем делайте коммит.</p>
+<p><strong>Автоматические проверки</strong></p>
+<ul><li><label><input type="checkbox" data-key="3dbbf5ab-97f2-4111-9bef-7f07e98926c8"><span>T1: экспорт включается по желанию, метаданные сервиса в OTLP верны, а завершение работы сбрасывает спаны, не засоряя stdout.</span></label></li><li><label><input type="checkbox" data-key="c24c5478-bfe8-4449-a189-fe10d9f54c03"><span>T2: у спанов запросов нужные имена, виды и классификация ошибок, а trace ID в отладочной строке совпадают с ними. Родители из метаданных работают по обоим транспортам, не семплированные родители соблюдаются, повторное использование скана не склеивает трассы, а запрос без params по-прежнему получает ответ.</span></label></li><li><label><input type="checkbox" data-key="d3841af6-2363-4e74-9599-7d10f44d0277"><span>T3: счётчики чтения измеряют реальную работу с распакованными данными, а повторное использование скана сокращает чтения.</span></label></li><li><label><input type="checkbox" data-key="a9bffa3d-a953-4363-ae72-f4df8869c713"><span>T4: в экспорте нет входных данных и результатов, отклонённых URI ресурсов и токенов, личность вызывающей стороны определена верно, а скрытые ошибки остаются скрытыми.</span></label></li><li><label><input type="checkbox" data-key="97adf661-e0aa-4dfc-9d48-56a7d8956fa2"><span>Собственные тесты сервера проходят.</span></label></li></ul></div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Ручные свидетельства</strong></p>
+<ul><li><label><input type="checkbox" data-key="87057e69-2cd3-4b1a-af34-981b9c2d4b26"><span>Трасса видна в LangSmith, а её счётчики — в локальном просмотрщике трасс.</span></label></li><li><label><input type="checkbox" data-key="9608d425-edb0-4e43-8333-46a55c111c71"><span>Расследование использует инструменты MCP и сохраняет вывод со свидетельствами в виде файла и строки.</span></label></li></ul></div>
+<div class="md" data-b="Markdown"><p><strong>Заметки по трассе расследования</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Вопрос</th>
+<th>Наблюдение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1: Сколько вызовов инструментов сделало расследование и какой из них занял больше всего времени?</td>
+<td></td>
+</tr>
+<tr>
+<td>Q2: Для этого самого долгого вызова: его операции чтения файлов, распакованные байты и доля его времени в read-спанах?</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Уборка</strong></p>
+<ul><li><label><input type="checkbox" data-key="2ef6c5c0-7f3a-4aec-842f-6c2fc48801ec"><span>Временная регистрация хоста удалена или исправлена на нужный проект.</span></label></li><li><label><input type="checkbox" data-key="214a82c4-d9fa-4cad-ad4d-5f39a7fe4694"><span>Серверы и локальный приёмник остановлены. Переменные OTLP и токенов очищены.</span></label></li><li><label><input type="checkbox" data-key="27d4e58c-e156-4520-8afe-8bb0e190c1cb"><span>В отслеживаемых файлах и в отправляемом решении нет настоящих учётных данных.</span></label></li><li><label><input type="checkbox" data-key="ddeb59ad-1a33-4b49-82f0-480df9018025"><span>Ключ LangSmith удалён из хранилища учётных данных и из LangSmith, когда он больше не нужен.</span></label></li></ul></div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Итоги</strong></p>
+<ul><li><label><input type="checkbox" data-key="4a5f3781-1995-411b-92cf-e763ccd864dd"><span>Время, потраченное на это задание, в минутах:</span></label></li></ul></div>
+<div class="md" data-b="Markdown"><p>Сначала остановите HTTP-сервер, чтобы он сбросил спаны, затем локальный просмотрщик. Удалите регистрацию упражнения соответствующей командой из задачи 6, когда она вам больше не нужна, и очистите переменные в каждом использованном терминале:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run in each terminal used for the practice.</span>
+<span class="c1"># macOS and Linux</span>
+<span class="nb">unset</span><span class="w"> </span>LANGSMITH_API_KEY<span class="w"> </span>OTEL_EXPORTER_OTLP_ENDPOINT<span class="w"> </span>OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+<span class="nb">unset</span><span class="w"> </span>OTEL_EXPORTER_OTLP_HEADERS<span class="w"> </span>OTEL_EXPORTER_OTLP_TRACES_HEADERS<span class="w"> </span>OTEL_SERVICE_NAME
+<span class="nb">unset</span><span class="w"> </span>LOG_TRIAGE_TOKENS<span class="w"> </span>LOG_TRIAGE_TOKEN<span class="w"> </span>LOG_TRIAGE_VIEWER_TOKEN
+
+<span class="c1"># Windows (PowerShell)</span>
+Remove-Item<span class="w"> </span>Env:LANGSMITH_API_KEY,<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_ENDPOINT,<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_TRACES_ENDPOINT<span class="w"> </span>-ErrorAction<span class="w"> </span>Ignore
+Remove-Item<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_HEADERS,<span class="w"> </span>Env:OTEL_EXPORTER_OTLP_TRACES_HEADERS,<span class="w"> </span>Env:OTEL_SERVICE_NAME<span class="w"> </span>-ErrorAction<span class="w"> </span>Ignore
+Remove-Item<span class="w"> </span>Env:LOG_TRIAGE_TOKENS,<span class="w"> </span>Env:LOG_TRIAGE_TOKEN,<span class="w"> </span>Env:LOG_TRIAGE_VIEWER_TOKEN<span class="w"> </span>-ErrorAction<span class="w"> </span>Ignore</code></pre></div>
+<p>Затем удалите ключ этого задания в LangSmith в разделе Settings, API Keys и уберите его из хранилища учётных данных:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run in any terminal.</span>
+<span class="c1"># macOS</span>
+security<span class="w"> </span>delete-generic-password<span class="w"> </span>-a<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span><span class="w"> </span>-s<span class="w"> </span>langsmith-api-key
+
+<span class="c1"># Linux</span>
+secret-tool<span class="w"> </span>clear<span class="w"> </span>service<span class="w"> </span>langsmith-api-key<span class="w"> </span>account<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+
+<span class="c1"># Windows (PowerShell)</span>
+Remove-Secret<span class="w"> </span>-Name<span class="w"> </span>langsmith-api-key<span class="w"> </span>-Vault<span class="w"> </span>SecretStore</code></pre></div>
+<h2 id="9-submit-your-task">9. Отправьте решение</h2>
+<p>Из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+git<span class="w"> </span>add<span class="w"> </span>solution<span class="w"> </span>reports<span class="w"> </span><span class="m">5</span>-telemetry
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Practice 5: integrate telemetry"</span></code></pre></div>
+<p><code>.mcp.json</code> в коммит не попадает: он указан в <code>.gitignore</code>. Ключ LangSmith ни разу не попадал в файл.</p>
+<p>Отправьте коммит:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+git<span class="w"> </span>push</code></pre></div>
+<p>Затем вернитесь к этому уроку и нажмите «Submit».</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подробнее</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ul>
+<li><a href="https://gofastmcp.com/servers/telemetry" target="_blank" rel="noopener noreferrer" class="ext">Телеметрия FastMCP</a>: спаны запросов, которые FastMCP открывает сам, контекст трассировки из _meta и режимы телеметрии.</li>
+<li><a href="https://opentelemetry.io/docs/languages/python/instrumentation/" target="_blank" rel="noopener noreferrer" class="ext">Инструментирование OpenTelemetry Python</a>: провайдер трассировщиков, спаны и их жизненный цикл.</li>
+<li><a href="https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/mcp.md" target="_blank" rel="noopener noreferrer" class="ext">Семантические конвенции OpenTelemetry для MCP</a>: имена спанов, атрибуты и правила для error.type.</li>
+<li><a href="https://docs.langchain.com/langsmith/trace-with-opentelemetry" target="_blank" rel="noopener noreferrer" class="ext">LangSmith: трассировка через OpenTelemetry</a>: endpoint, заголовки и что происходит со спаном, чей родитель так и не пришёл.</li>
+<li><a href="https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli" target="_blank" rel="noopener noreferrer" class="ext">MCP Inspector CLI</a>: флаги --config, --server, --method и --tool-arg в вызовах из задач 5 и 6.</li>
+</ul>
+</div>
+</div></details>
+</div><nav class="prev-next" aria-label="Lesson navigation"><a class="pn-card prev" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/17%20-%20Tracing%20your%20MCP%20server%20in%20LangSmith%20from%20your%20tool%20of%20choice.html" data-nav="prev"><span class="pn-label">← Назад</span><span class="pn-title">Трассировка MCP-сервера в LangSmith из вашего инструмента (Claude Code, Cursor, Codex, Copilot)</span><span class="pn-sub">Урок 17</span></a><a class="pn-card next" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/19%20-%20Conclusion.html" data-nav="next"><span class="pn-label">Далее →</span><span class="pn-title">Заключение</span><span class="pn-sub">Урок 19</span></a></nav></article>
+</main>
+<aside class="toc" aria-label="На этой странице"><div class="toc-inner"><div class="toc-title">На этой странице</div><ol><li class="toc-h2"><a href="#workflow-at-a-glance">👩‍💻 Обзор шагов</a></li><li class="toc-h2"><a href="#1-set-up-your-environment">1. Подготовьте окружение</a></li><li class="toc-h3"><a href="#project-structure">Структура проекта</a></li><li class="toc-h2"><a href="#2-task-1-export-and-shutdown">2. Задача 1: экспорт и завершение работы</a></li><li class="toc-h2"><a href="#3-task-2-request-spans-and-the-callers-trace">3. Задача 2: спаны запросов и трасса вызывающей стороны</a></li><li class="toc-h2"><a href="#4-task-3-reading">4. Задача 3: чтение</a></li><li class="toc-h2"><a href="#5-task-4-what-stays-out">5. Задача 4: что не должно попадать в спаны</a></li><li class="toc-h2"><a href="#6-task-5-a-trace-backend">6. Задача 5: бэкенд для трасс</a></li><li class="toc-h3"><a href="#langsmith">LangSmith</a></li><li class="toc-h3"><a href="#local-viewer">Локальный просмотрщик</a></li><li class="toc-h2"><a href="#7-task-6-the-case-with-telemetry-on">7. Задача 6: кейс с включённой телеметрией</a></li><li class="toc-h3"><a href="#run-the-investigation">Проведите расследование</a></li><li class="toc-h2"><a href="#8-check-your-work">8. Проверьте свою работу</a></li><li class="toc-h2"><a href="#9-submit-your-task">9. Отправьте решение</a></li></ol></div></aside>
+</div>
+<div class="scrim" data-act="menu"></div>
+<script src="../assets/tr-status.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

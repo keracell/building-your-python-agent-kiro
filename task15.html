@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ru" data-width="wide">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Интеграция с реальным агентом · Расширение возможностей ИИ с помощью собственных MCP-серверов</title>
+<script>(function(){try{var d=document.documentElement,t=localStorage.getItem("nc-theme"),w=localStorage.getItem("nc-width");
+if(t)d.setAttribute("data-theme",t);else if(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)d.setAttribute("data-theme","dark");
+if(w)d.setAttribute("data-width",w);}catch(e){}})();</script>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="page-lesson" data-root="../">
+<header class="topbar">
+  <button class="icon-btn menu-btn" type="button" aria-label="Показать навигацию" data-act="menu"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+  <a class="brand" href="../index.html"><span class="brand-mark">N</span><span class="brand-text">Курсы Nebius Academy</span></a>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Курсы</a><span class="sep">/</span><a href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Расширение возможностей ИИ с помощью собственных MCP-серверов</a><span class="sep">/</span><span>Интеграция с реальным агентом</span></nav>
+  <div class="top-actions">
+    <div class="search" role="search">
+      <span class="search-icon"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13.5 13.5L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+      <input id="search-input" type="search" placeholder="Поиск по всем урокам…  ( / )" autocomplete="off" aria-label="Поиск по всем урокам">
+      <div class="search-results" id="search-results" hidden></div>
+    </div>
+    <nav class="lang-switch" aria-label="Language"><a href="../../html/Extending%20AI%20with%20Custom%20MCP%20Servers/15%20-%20Integrate%20with%20a%20Real%20Agent.html" hreflang="en" lang="en" title="Read in English" data-lang-switch>EN</a><span class="active" aria-current="true">RU</span></nav>
+    <button class="icon-btn" type="button" data-act="width" title="Ширина текста"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M2 10h16M5 7l-3 3 3 3M15 7l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="btn-label" id="width-label">Широко</span></button>
+    <button class="icon-btn" type="button" data-act="theme" title="Светлая / тёмная тема"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 3a7 7 0 010 14z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+<div class="layout has-toc">
+<nav class="sidebar" id="sidebar" aria-label="Course navigation"><div class="sidebar-inner"><a class="side-home" href="../index.html">Все курсы</a><details class="side-course"><summary><span class="side-course-name">Создание собственного ИИ-агента</span><span class="side-course-meta">29/29</span></summary><a class="side-overview" href="../Building%20Your%20Own%20AI%20Agent/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/01%20-%20Module%20Overview%20Building%20Your%20Own%20AI%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">1</span><span class="side-title">Обзор модуля: создание собственного ИИ-агента</span><span class="tag-en" data-key="agent-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/02%20-%20What%20Is%20an%20AI%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">2</span><span class="side-title">Что такое ИИ-агент?</span><span class="tag-en" data-key="agent-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/03%20-%20Practice%20What%20Is%20an%20AI%20Agent%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">3</span><span class="side-title">Практика: что такое ИИ-агент? [версия для Kiro]</span><span class="tag-en" data-key="agent-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/04%20-%20Defining%20the%20Scope.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">4</span><span class="side-title">Определение рамок задачи</span><span class="tag-en" data-key="agent-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/05%20-%20Practice%20Defining%20the%20Scope%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">5</span><span class="side-title">Практика: определение рамок задачи [версия для Kiro]</span><span class="tag-en" data-key="agent-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/06%20-%20Assembling%20Your%20Agent.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">6</span><span class="side-title">Сборка агента</span><span class="tag-en" data-key="agent-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/07%20-%20How%20to%20Assemble%20Your%20Agent%20in%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">7</span><span class="side-title">Как собрать агента в Kiro</span><span class="tag-en" data-key="agent-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/08%20-%20Practice%20Assembling%20Your%20Agent%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">8</span><span class="side-title">Практика: сборка агента [версия для Kiro]</span><span class="tag-en" data-key="agent-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/09%20-%20Agent%20Tooling.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">9</span><span class="side-title">Инструменты агента</span><span class="tag-en" data-key="agent-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/10%20-%20How%20to%20Add%20Tools%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">10</span><span class="side-title">Как добавить инструменты: Kiro</span><span class="tag-en" data-key="agent-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/11%20-%20Practice%20Agent%20Tooling%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">11</span><span class="side-title">Практика: инструменты агента [версия для Kiro]</span><span class="tag-en" data-key="agent-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/12%20-%20Skills.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">12</span><span class="side-title">Skills</span><span class="tag-en" data-key="agent-12" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/13%20-%20How%20to%20Add%20Skills%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">13</span><span class="side-title">Как добавить skills: Kiro</span><span class="tag-en" data-key="agent-13" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/14%20-%20Practice%20Skills%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">14</span><span class="side-title">Практика: skills [версия для Kiro]</span><span class="tag-en" data-key="agent-14" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/15%20-%20Adding%20Subagents.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">15</span><span class="side-title">Добавление subagents</span><span class="tag-en" data-key="agent-15" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/16%20-%20How%20to%20Add%20Subagents%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">16</span><span class="side-title">Как добавить subagents: Kiro</span><span class="tag-en" data-key="agent-16" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/17%20-%20Practice%20Subagents%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">17</span><span class="side-title">Практика: subagents [версия для Kiro]</span><span class="tag-en" data-key="agent-17" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/18%20-%20Adding%20Memory.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">18</span><span class="side-title">Добавление памяти</span><span class="tag-en" data-key="agent-18" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/19%20-%20How%20to%20Add%20Memory%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">19</span><span class="side-title">Как добавить память: Kiro</span><span class="tag-en" data-key="agent-19" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/20%20-%20Practice%20Adding%20Memory%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">20</span><span class="side-title">Практика: добавление памяти [версия для Kiro]</span><span class="tag-en" data-key="agent-20" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/21%20-%20Hooks.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">21</span><span class="side-title">Hooks</span><span class="tag-en" data-key="agent-21" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/22%20-%20How%20to%20Add%20Hooks%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">22</span><span class="side-title">Как добавить hooks: Kiro</span><span class="tag-en" data-key="agent-22" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/23%20-%20Practice%20Adding%20Hooks%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">23</span><span class="side-title">Практика: добавление hooks [версия для Kiro]</span><span class="tag-en" data-key="agent-23" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/24%20-%20Observability.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">24</span><span class="side-title">Наблюдаемость</span><span class="tag-en" data-key="agent-24" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/25%20-%20How%20to%20Add%20Observability%20Kiro.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">25</span><span class="side-title">Как добавить наблюдаемость: Kiro</span><span class="tag-en" data-key="agent-25" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/26%20-%20Practice%20Adding%20Observability%20%5BKiro%20Edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">26</span><span class="side-title">Практика: добавление наблюдаемости [версия для Kiro]</span><span class="tag-en" data-key="agent-26" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/27%20-%20Output%20Verification.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">27</span><span class="side-title">Проверка результата</span><span class="tag-en" data-key="agent-27" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/28%20-%20Final%20Practice%20Submission%20%5BKiro%20edition%5D.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">28</span><span class="side-title">Итоговое практическое задание [версия для Kiro]</span><span class="tag-en" data-key="agent-28" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Building%20Your%20Own%20AI%20Agent/29%20-%20Conclusion.html"><span class="st st-done" title="Пройден"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="side-num">29</span><span class="side-title">Заключение</span><span class="tag-en" data-key="agent-29" title="Ещё не переведено">EN</span></a></li></ol></details><details class="side-course" open><summary><span class="side-course-name">Расширение возможностей ИИ с помощью собственных MCP-серверов</span><span class="side-course-meta">0/19</span></summary><a class="side-overview" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/01%20-%20Introduction.html"><span class="st st-todo"></span><span class="side-num">1</span><span class="side-title">Введение</span><span class="tag-en" data-key="mcp-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/02%20-%20MCP%20in%20a%20Nutshell.html"><span class="st st-todo"></span><span class="side-num">2</span><span class="side-title">MCP в двух словах</span><span class="tag-en" data-key="mcp-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/03%20-%20Choosing%20an%20MCP%20Server%20Buy%20or%20Build.html"><span class="st st-todo"></span><span class="side-num">3</span><span class="side-title">Выбор MCP-сервера: готовый или собственный</span><span class="tag-en" data-key="mcp-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/04%20-%20How%20to%20connect%20an%20existing%20MCP%20server%20in%20your%20tool%20of%20choice.html"><span class="st st-todo"></span><span class="side-num">4</span><span class="side-title">Как подключить готовый MCP-сервер к вашему инструменту (Claude Code, Cursor, Codex, Copilot)</span><span class="tag-en" data-key="mcp-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/05%20-%20Connecting%20an%20MCP%20server%20to%20your%20tool.html"><span class="st st-todo"></span><span class="side-num">5</span><span class="side-title">Подключение MCP-сервера к вашему инструменту</span><span class="tag-en" data-key="mcp-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/06%20-%20Inspecting%20your%20MCP%20Server%20with%20the%20MCP%20Inspector.html"><span class="st st-todo"></span><span class="side-num">6</span><span class="side-title">Проверка MCP-сервера с помощью MCP Inspector</span><span class="tag-en" data-key="mcp-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/07%20-%20Basics%20of%20Model%20Context%20Protocol.html"><span class="st st-todo"></span><span class="side-num">7</span><span class="side-title">Основы Model Context Protocol</span><span class="tag-en" data-key="mcp-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/08%20-%20Designing%20your%20MCP%20Server%20the%20surface%20and%20the%20contract.html"><span class="st st-todo"></span><span class="side-num">8</span><span class="side-title">Проектирование MCP-сервера: поверхность и контракт</span><span class="tag-en" data-key="mcp-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/09%20-%20Build%20the%20surface%20and%20the%20contract.html"><span class="st st-todo"></span><span class="side-num">9</span><span class="side-title">Создаём поверхность и контракт</span><span class="tag-en" data-key="mcp-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/10%20-%20Designing%20your%20MCP%20Server%20state%2C%20safety%20and%20errors.html"><span class="st st-todo"></span><span class="side-num">10</span><span class="side-title">Проектирование MCP-сервера: состояние, безопасность и ошибки</span><span class="tag-en" data-key="mcp-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/11%20-%20State%2C%20safety%20and%20errors.html"><span class="st st-current" title="Вы здесь"></span><span class="side-num">11</span><span class="side-title">Состояние, безопасность и ошибки</span><span class="tag-en" data-key="mcp-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/12%20-%20Testing%20and%20Debugging%20your%20MCP%20Server.html"><span class="st st-todo"></span><span class="side-num">12</span><span class="side-title">Тестирование и отладка MCP-сервера</span><span class="tag-en" data-key="mcp-12" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/13%20-%20Testing%20and%20Debugging%20the%20Server.html"><span class="st st-todo"></span><span class="side-num">13</span><span class="side-title">Тестирование и отладка сервера</span><span class="tag-en" data-key="mcp-13" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/14%20-%20Integrating%20with%20Agents%20and%20Clients.html"><span class="st st-todo"></span><span class="side-num">14</span><span class="side-title">Интеграция с агентами и клиентами</span><span class="tag-en" data-key="mcp-14" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson active" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/15%20-%20Integrate%20with%20a%20Real%20Agent.html" aria-current="page"><span class="st st-todo"></span><span class="side-num">15</span><span class="side-title">Интеграция с реальным агентом</span><span class="tag-en" data-key="mcp-15" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/16%20-%20Telemetry%20for%20MCP.html"><span class="st st-todo"></span><span class="side-num">16</span><span class="side-title">Телеметрия для MCP</span><span class="tag-en" data-key="mcp-16" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/17%20-%20Tracing%20your%20MCP%20server%20in%20LangSmith%20from%20your%20tool%20of%20choice.html"><span class="st st-todo"></span><span class="side-num">17</span><span class="side-title">Трассировка MCP-сервера в LangSmith из вашего инструмента (Claude Code, Cursor, Codex, Copilot)</span><span class="tag-en" data-key="mcp-17" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/18%20-%20Integrate%20telemetry%20for%20MCP.html"><span class="st st-todo"></span><span class="side-num">18</span><span class="side-title">Подключаем телеметрию для MCP</span><span class="tag-en" data-key="mcp-18" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/19%20-%20Conclusion.html"><span class="st st-todo"></span><span class="side-num">19</span><span class="side-title">Заключение</span><span class="tag-en" data-key="mcp-19" title="Ещё не переведено">EN</span></a></li></ol></details><details class="side-course"><summary><span class="side-course-name">Оркестрация мультиагентных систем</span><span class="side-course-meta">0/12</span></summary><a class="side-overview" href="../Orchestrating%20Multi-Agent%20Systems/index.html">Обзор курса</a><ol class="side-lessons"><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/01%20-%20One%20Agent%20or%20More.html"><span class="st st-todo"></span><span class="side-num">1</span><span class="side-title">Один агент или несколько?</span><span class="tag-en" data-key="multi-01" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/02%20-%20The%20Five%20Levels%20of%20Agency.html"><span class="st st-todo"></span><span class="side-num">2</span><span class="side-title">Пять уровней агентности</span><span class="tag-en" data-key="multi-02" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/03%20-%20Role%20Decomposition.html"><span class="st st-todo"></span><span class="side-num">3</span><span class="side-title">Декомпозиция ролей</span><span class="tag-en" data-key="multi-03" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/04%20-%20Graph-Based%20Orchestration.html"><span class="st st-todo"></span><span class="side-num">4</span><span class="side-title">Оркестрация на основе графов</span><span class="tag-en" data-key="multi-04" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/05%20-%20State%20Management.html"><span class="st st-todo"></span><span class="side-num">5</span><span class="side-title">Управление состоянием</span><span class="tag-en" data-key="multi-05" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/06%20-%20Building%20the%20Graph%20Nodes%2C%20Edges%20%26%20Wiring.html"><span class="st st-todo"></span><span class="side-num">6</span><span class="side-title">Построение графа: узлы, рёбра и связи</span><span class="tag-en" data-key="multi-06" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/07%20-%20Practice%20Building%20the%20Graph%20%26%20State.html"><span class="st st-todo"></span><span class="side-num">7</span><span class="side-title">Практика: граф и состояние</span><span class="tag-en" data-key="multi-07" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/08%20-%20Observability%20for%20Multi-Agent%20Systems.html"><span class="st st-todo"></span><span class="side-num">8</span><span class="side-title">Наблюдаемость мультиагентных систем</span><span class="tag-en" data-key="multi-08" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/09%20-%20Practice%20Observability%20for%20Multi-Agent%20Systems.html"><span class="st st-todo"></span><span class="side-num">9</span><span class="side-title">Практика: наблюдаемость мультиагентных систем</span><span class="tag-en" data-key="multi-09" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/10%20-%20Human-in-the-Loop%20in%20LangGraph.html"><span class="st st-todo"></span><span class="side-num">10</span><span class="side-title">Human-in-the-loop в LangGraph</span><span class="tag-en" data-key="multi-10" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/11%20-%20Practice%20Final%20Challenge.html"><span class="st st-todo"></span><span class="side-num">11</span><span class="side-title">Практика: итоговое задание</span><span class="tag-en" data-key="multi-11" title="Ещё не переведено">EN</span></a></li><li><a class="side-lesson" href="../Orchestrating%20Multi-Agent%20Systems/12%20-%20Course%20Conclusion.html"><span class="st st-todo"></span><span class="side-num">12</span><span class="side-title">Заключение курса</span><span class="tag-en" data-key="multi-12" title="Ещё не переведено">EN</span></a></li></ol></details></div></nav>
+<main class="main" id="main">
+<article class="content lesson"><header class="lesson-head">
+  <a class="eyebrow" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/index.html">Расширение возможностей ИИ с помощью собственных MCP-серверов · Урок 15 из 19</a>
+  <h1>Интеграция с реальным агентом</h1>
+  <div class="lesson-meta"><span class="badge badge-project">Проект</span><span class="meta-item">~22 мин чтения</span>
+  <span class="meta-item">Репозиторий: <code>build-your-own-mcp-fastmcp</code></span></div>
+</header><div class="lesson-body"><div class="md" data-b="Markdown"><div class="callout callout-default"><p>⌨️ В этом практическом задании вы выставите свой сервер Log Triage перед настоящими хостами агентов: по HTTP с bearer-токенами, с различением вызывающих и с промптом, который задаёт рамки расследования.</p>
+</div>
+<p>Log Triage — это MCP-сервер, который позволяет ИИ-агенту разбирать набор логов на вашей машине. Агент спрашивает, какие там есть файлы, что пошло не так в файле или папке за некоторое время и какие строки подходят под шаблон, а в ответ получает счётчики, группы сообщений и несколько строк вместо целых файлов. Сервер умеет читать форматы логов и больше ничего: все выводы делает агент.</p>
+<p>Ваш сервер в <code>solution/</code> уже перечисляет, обобщает и ищет логи, хранит сканирования, по которым агент может листать, читает вокруг строки, проверяет каждый путь, пишет в лог каждый вызов и рисует временную шкалу, а ваши тесты и проба его проверяют. Пока что он работает только как процесс, который запускает хост вашего агента, для одного вызывающего.</p>
+<blockquote>
+<p><em>Марта дежурит на платформе хостинга, и её агент для программирования отвечает на вопросы о логах через сервер, до которого её команда хочет достучаться из собственных хостов агентов: у каждого свой токен, а один из токенов только для чтения. Прежде чем передать сервер, она хочет увидеть его так, как его показывают хосты, и задать ему два настоящих вопроса.</em></p>
+</blockquote>
+<p>В конце ваш агент отвечает на вопросы о логах через хост. Два вопроса обязательны, слово в слово:</p>
+<blockquote>
+<p><em>Customers got errors on the invoices page late in the morning of 2026-09-09. Which instance, when, and why?</em></p>
+</blockquote>
+<blockquote>
+<p><em>The API logs say 'DB is locked'. Since when, how often, is it getting worse, and what does the database say?</em></p>
+</blockquote>
+<p>В <code>cases.md</code> в папке практики они приведены с подсказкой, где искать, плюс два необязательных вопроса.</p>
+<p>Что вы строите:</p>
+<ul>
+<li>Флаг <code>--http HOST:PORT</code>: streamable HTTP без состояния на <code>/mcp</code>, с bearer-токенами из <code>LOG_TRIAGE_TOKENS</code>, ответом 401 для отсутствующего или неизвестного токена и 403 для чужого <code>Origin</code>.</li>
+<li>Вызывающих по токенам: каждое сканирование принадлежит своему вызывающему, а вызывающий только для чтения не видит <code>save_finding</code> и получает E13, если вызовет его.</li>
+<li>Промпт <code>triage</code>, последнее предложение в instructions и версию <code>0.4.0</code>.</li>
+<li>Две регистрации в хостах, выводы по кейсам и заметки о том, что показали хосты.</li>
+</ul>
+<p>Stdio остаётся по умолчанию, с единственным вызывающим <code>local</code>, поэтому уже имеющиеся проверки продолжают проходить. <code>CLAUDE.md</code> в папке практики говорит вашему агенту то же самое.</p>
+<p>Вам нужно знать, как MCP-сервер обслуживается по HTTP и от чего защищает проверка <code>Origin</code>, что такое bearer-токен и principal, как хост агента регистрирует сервер и спрашивает разрешение перед запуском инструмента.</p>
+</div>
+<div class="step-divider" data-b="ActionButton"><span>Поехали!</span></div>
+<div class="md" data-b="Markdown"><h2 id="workflow-at-a-glance">👩‍💻 Обзор шагов</h2>
+<ol>
+<li>Подготовьте окружение</li>
+<li>Задача 1: HTTP с токенами</li>
+<li>Задача 2: вызывающие</li>
+<li>Задача 3: промпт triage</li>
+<li>Задача 4: два хоста</li>
+<li>Задача 5: кейсы</li>
+<li>Задача 6: что показывает хост</li>
+<li>Задача 7: проверка в MCP Inspector</li>
+<li>Проверьте свою работу</li>
+<li>Отправьте решение</li>
+</ol>
+<h2 id="1-set-up-your-environment">1. Подготовьте окружение</h2>
+<p>Продолжайте в своей копии <code>build-your-own-mcp-fastmcp</code>, с сервером в <code>solution/</code>. Прочитайте корневой <code>README.md</code>, затем <code>4-agents-and-clients/README.md</code>: там цель проекта и файлы этапа. В той же папке лежат контракт, шаги для хостов, кейсы, примеры токенов и проверки. Откройте терминал в корне репозитория.</p>
+<div class="callout callout-default"><p>💡 Если ваш сервер с предыдущего этапа неполный или не проходит свои проверки, скачайте <a href="https://github.com/nebius-academy-templates/build-your-own-mcp-fastmcp-for-revs/tree/main/build-your-own-mcp-fastmcp-3-testing-and-debugging/build-your-own-mcp-fastmcp" target="_blank" rel="noopener noreferrer" class="ext">готовый проект предыдущего этапа</a> и возьмите его папку <code>solution/</code> как отправную точку для этого задания.</p>
+</div>
+<p>Вам понадобятся эти инструменты, среди них Claude Code, а для задачи 4 ещё и второй хост: <code>hosts.md</code> в папке практики использует Codex CLI.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Версия</th>
+<th>Для чего</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.13 (его установит uv)</td>
+<td>сервер и проверки</td>
+</tr>
+<tr>
+<td>uv</td>
+<td>0.11 или новее</td>
+<td>окружения, запуск сервера и проверок</td>
+</tr>
+<tr>
+<td>FastMCP</td>
+<td>4.0.3, закреплён в <code>pyproject.toml</code> сервера</td>
+<td>библиотека MCP-сервера</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>22.19 или новее</td>
+<td>запускает <code>npx @modelcontextprotocol/inspector</code></td>
+</tr>
+<tr>
+<td>Хост агента</td>
+<td>Claude Code или другой кодинг-агент, который умеет работать с MCP-серверами</td>
+<td>сборка сервера и вопросы к нему</td>
+</tr>
+<tr>
+<td>Второй хост агента</td>
+<td>Codex CLI или другой хост, который умеет работать с MCP-серверами по HTTP</td>
+<td>второй хост в задаче 4</td>
+</tr>
+<tr>
+<td>git</td>
+<td>любая свежая версия</td>
+<td>коммит после каждой практики</td>
+</tr>
+</tbody>
+</table></div>
+<p>Проверки в <code>1-surface-and-contract/checks/</code>, <code>2-state-safety-errors/checks/</code> и <code>3-testing-and-debugging/checks/</code> тестируют уже имеющийся у вас сервер, и они должны проходить до начала работы. Выполните этот блок из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks
+uv<span class="w"> </span>sync<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks</code></pre></div>
+<p>Первые три проходят. Это примеры сводок; затраченное время зависит от машины:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>============================= 137 passed in 44.95s =============================
+============================= 209 passed in 24.63s =============================
+============================= 59 passed in 39.29s ==============================</code></pre></div>
+<p>Четвёртая падает в каждом файле, и каждое падение говорит, чего не хватает: у вашего сервера пока нет <code>--http</code>, вызывающих и промпта.</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>test_t1_http.py FFFFFFFFFFFFFFFFFFFFFFFFFFFF                             [ 58%]
+test_t2_principals.py FFFFFFFFFFF                                        [ 81%]
+test_t3_prompt.py FFFFFFFFF                                              [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_http_without_tokens_exits_2 _______________________
+test_t1_http.py:24: in test_http_without_tokens_exits_2
+    assert TOKENS_MISSING in lines, (
+E   AssertionError: stderr must hold the line &#x27;LOG_TRIAGE_TOKENS is required with --http&#x27; (CONTRACT.md, section 1); last lines:
+E     usage: log-triage [-h] --root DIR [--reports DIR] [--read-only]
+...
+E     log-triage: error: unrecognized arguments: --http 127.0.0.1:...
+...
+============================== 48 failed in 5.55s ==============================</code></pre></div>
+<p>Начните новую сессию кодингового агента в корне репозитория. Он прочитает корневой <code>CLAUDE.md</code>, который сначала отправит его к <code>CLAUDE.md</code> в папке практики.</p>
+<p>Давайте агенту по одному промпту, по порядку, в одной и той же сессии. После каждого промпта убедитесь, что контрольная точка в его конце выполнена, и только потом переходите дальше. Задачи с 4 по 7 выполняются в хостах агентов и в Inspector по шагам ниже.</p>
+<h3 id="project-structure">Структура проекта</h3>
+<p>Продолжайте работать в том же репозитории. Вот папки, которые вам нужны. Файлы реализации задачи и промпты вводят по мере необходимости.</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>build-your-own-mcp-fastmcp/
+  1-surface-and-contract/       first-stage contract and checks
+  2-state-safety-errors/        state and safety checks
+  3-testing-and-debugging/      tests, probe and mutation materials
+  4-agents-and-clients/         current contract, host guide, cases and checks
+  docs/                         log-format and corpus notes
+  reports/                      saved findings
+  s3_logs/                      read-only log bundle
+  solution/                     your Python server</code></pre></div>
+<h2 id="2-task-1-http-with-tokens">2. Задача 1: HTTP с токенами</h2>
+<div class="callout callout-default"><p>💡 Цель: обслуживать сервер по HTTP только для вызывающих с известным bearer-токеном и допустимым локальным <code>Origin</code> либо без заголовка <code>Origin</code>.</p>
+</div>
+<p>FastMCP обслуживает <code>/mcp</code> по HTTP, когда сервер запущен с <code>transport=&quot;http&quot;</code> и <code>stateless_http=True</code>. Проверка <code>Origin</code> выполняется первой, проверка учётных данных — второй, так что отклонённый запрос никогда не доходит до инструмента.</p>
+<p>Реализуйте правила HTTP из разделов 1 и 7 файла <code>4-agents-and-clients/CONTRACT.md</code>:</p>
+<ul>
+<li>Добавьте <code>--http HOST:PORT</code>, чтобы обслуживать <code>/mcp</code> в режиме без состояния. Stdio остаётся по умолчанию.</li>
+<li>Читайте <code>LOG_TRIAGE_TOKENS</code> как записи через запятую вида <code>token=principal</code> или <code>token=principal:read-only</code>. Если HTTP включён, а переменной нет, завершитесь с кодом 2 и выведите в stderr <code>LOG_TRIAGE_TOKENS is required with --http</code>.</li>
+<li>Принимайте запрос без <code>Origin</code> либо с заголовком, равным ровно <code>http://localhost</code> или <code>http://127.0.0.1</code> с необязательным портом. Любой другой origin отклоняйте с 403 до проверки токена. Затем требуйте известный bearer-токен, иначе возвращайте 401 с <code>WWW-Authenticate: Bearer</code>.</li>
+<li>В этой задаче оставляйте аутентифицированного вызывающего как <code>local</code>. Держите stdout пустым по HTTP, свои строки HTTP-сервера отправляйте в stderr или отключите, а команду запуска по HTTP добавьте в <code>solution/README.md</code>.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Оставьте stdio путём по умолчанию. Флаг <code>--http</code> выбирает второй транспорт.</li>
+<li>Выполняйте проверку <code>Origin</code> до разбора токена, чтобы чужая страница не могла узнать, действителен ли токен.</li>
+<li>Поместите проверки <code>Origin</code> и bearer-токена в ASGI middleware вокруг одного HTTP-приложения FastMCP.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Add streamable HTTP to the server in solution/, as 4-agents-and-clients/CONTRACT.md sections 1
+and 7 describe it: a --http HOST:PORT flag in __main__.py, stateless HTTP at /mcp set up in a
+new src/logtriage/http.py, and the bearer tokens from LOG_TRIAGE_TOKENS and the Origin check
+in a new src/logtriage/auth.py. Stdio stays the default and doesn&#x27;t change. With --http,
+nothing may reach stdout, the HTTP server&#x27;s own lines included. Every caller is still local
+for now. Add the HTTP command to solution/README.md.
+Run from the repository root: uv run --project solution pytest solution/tests, then
+uv run --project 4-agents-and-clients/checks pytest 4-agents-and-clients/checks
+Checkpoint: test_t1_http.py passes; test_t2_principals.py and test_t3_prompt.py still fail;
+the practice 1 to 3 checks still pass.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><code>CLAUDE.md</code> в папке практики просит оставить <code>host_origin_protection</code> в FastMCP выключенным, как по умолчанию, потому что он пропускает больше origin, чем разрешает контракт, и проверять <code>Origin</code> в ASGI middleware, которое видит каждый запрос раньше, чем FastMCP ответит 401 на маршруте <code>/mcp</code>. uvicorn, HTTP-сервер под FastMCP, пишет свои access-строки в stdout, пока ему не дали собственную конфигурацию логирования, так что отправьте их в stderr или отключите.</p>
+<p><strong>Проверка:</strong> <code>test_t1_http.py</code> проходит. Выполните эту команду из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks/test_t1_http.py</code></pre></div>
+<p>Проверка выводит:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>test_t1_http.py ............................                             [100%]
+
+============================== 28 passed in 7.68s ==============================</code></pre></div>
+<p>В полном прогоне из промпта <code>test_t1_http.py</code> показывает только точки, а первое падение приходит из файла следующей задачи:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>test_t1_http.py ............................                             [ 58%]
+test_t2_principals.py ..F.FFF.F..                                        [ 81%]
+test_t3_prompt.py FFFFFFFF.                                              [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_another_caller_gets_e6 __________________________
+test_t2_principals.py:41: in test_another_caller_gets_e6
+...
+E   AssertionError: group_lines({&quot;scan_id&quot;: &quot;s_...&quot;, &quot;group_id&quot;: &quot;8857dd279d4d&quot;}) was accepted; it must answer: scan &quot;s_...&quot; is unknown or has expired. Call summarize_logs again for a new scan_id.
+...</code></pre></div>
+<p>Затем загрузите примеры токенов и запустите сервер. Выполните этот блок из корня репозитория в отдельном терминале:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+<span class="nb">set</span><span class="w"> </span>-a
+.<span class="w"> </span><span class="m">4</span>-agents-and-clients/tokens.example.env
+<span class="nb">set</span><span class="w"> </span>+a
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>log-triage<span class="w"> </span>--root<span class="w"> </span>s3_logs<span class="w"> </span>--reports<span class="w"> </span>reports<span class="w"> </span>--http<span class="w"> </span><span class="m">127</span>.0.0.1:8765</code></pre></div>
+<p>Он ждёт запросов и ничего не выводит в stdout. Остановите его по Ctrl+C, когда закончите. Строки запуска идут в stderr, включая строку FastMCP <code>Starting MCP server 'log-triage' with transport 'http' (stateless)</code>.</p>
+<h2 id="3-task-2-callers">3. Задача 2: вызывающие</h2>
+<div class="callout callout-default"><p>💡 Цель: держать сканирования каждого вызывающего приватными и не давать вызывающему только для чтения записывать.</p>
+</div>
+<p>При <code>stateless_http=True</code> каждый запрос обслуживается одним объектом <code>FastMCP</code>. Сканирование переходит между запросами через свой <code>scan_id</code> и общее хранилище, которое на каждом запросе сверяет этот id с вызывающим.</p>
+<p>Реализуйте правила для вызывающих из разделов 4, 6 и 7 файла <code>4-agents-and-clients/CONTRACT.md</code>:</p>
+<ul>
+<li>Читайте principal токена на каждом HTTP-запросе и оставляйте <code>local</code> по stdio. Авторизуйте каждое чтение и запись сканирования по этому principal. Два токена одного principal делят сканирования. Другой principal получает E6 от инструмента или resource-not-found от <code>triage://scans/{scan_id}</code>.</li>
+<li>Сделайте общее хранилище безопасным для параллельных запросов и применяйте лимит в 20 сканирований отдельно к каждому вызывающему.</li>
+<li>Скрывайте <code>save_finding</code> из <code>tools/list</code> вызывающего только для чтения. Корректный прямой вызов возвращает E13, <code>save_finding is not available to this caller.</code> Глобальный <code>--read-only</code> по-прежнему убирает инструмент для всех. Помечайте <code>tools/list</code> значением <code>cacheScope: &quot;private&quot;</code>.</li>
+<li>Добавьте собственные HTTP-тесты для общих и раздельных principal и для вызывающего только для чтения.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Определяйте вызывающего по access token FastMCP на границе запроса и передавайте его в каждый обработчик с состоянием.</li>
+<li>Держите одно хранилище сканирований на все HTTP-запросы без состояния. Транспорт без состояния не означает пустое состояние приложения.</li>
+<li>Используйте middleware и для фильтрации <code>tools/list</code>, и для отказа на прямой вызов <code>save_finding</code> с E13.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Make the caller come from the bearer token, as 4-agents-and-clients/CONTRACT.md section 7
+(Callers) says: the scan store in scans.py keeps each scan for its caller, local over stdio
+and the token&#x27;s principal over HTTP, and every tool and resource that reads a scan reads it
+as that caller. A read-only principal doesn&#x27;t see save_finding in tools/list and gets E13
+when it calls it: add E13 to errors.py and the rest to tools/findings.py. --read-only still
+removes the tool for everyone. Add tests of your own for two callers over HTTP.
+Run from the repository root: uv run --project solution pytest solution/tests, then
+uv run --project 4-agents-and-clients/checks pytest 4-agents-and-clients/checks
+Checkpoint: test_t1_http.py and test_t2_principals.py pass; test_t3_prompt.py still fails;
+the practice 1 to 3 checks still pass.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>Хранилище сканирований одно на весь процесс, и каждый инструмент читает и сохраняет сканирования от имени вызывающего, которого называет <code>get_access_token()</code> из FastMCP, а при отсутствии токена это <code>local</code>. Если скрывать <code>save_finding</code> через <code>auth=require_scopes(...)</code>, вызов вызывающего только для чтения получил бы отказ FastMCP «неизвестный инструмент», а не E13, так что скрытие и E13 — это ваш собственный код, например FastMCP middleware, которое выполняется до того, как FastMCP проверит аргументы, и поэтому отвечает E13 даже на неверные.</p>
+<p><strong>Проверка:</strong> <code>test_t2_principals.py</code> проходит. Выполните эту команду из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks/test_t2_principals.py</code></pre></div>
+<p>Она выводит:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>test_t2_principals.py ...........                                        [100%]
+
+============================= 11 passed in 10.49s ==============================</code></pre></div>
+<h2 id="4-task-3-the-triage-prompt">4. Задача 3: промпт triage</h2>
+<div class="callout callout-default"><p>💡 Цель: опубликовать промпт, который задаёт рамки расследования агенту, ничего не знающему об этих логах.</p>
+</div>
+<p>Промпт — это примитив, который запускает пользователь. <code>@mcp.prompt</code> публикует его с аргументами, у которых есть имя, описание и признак обязательности, но нет типа.</p>
+<p>Постройте <code>triage</code> по правилам из раздела 5 файла <code>4-agents-and-clients/CONTRACT.md</code>:</p>
+<ul>
+<li>Зарегистрируйте обязательный <code>symptom</code>, затем необязательные <code>path</code>, <code>since</code> и <code>until</code>, именно в таком порядке. Дайте описание промпту и каждому аргументу. Пустой или отсутствующий <code>path</code> означает весь корень логов.</li>
+<li>Верните одно сообщение <code>user</code>, которое повторяет каждый переданный аргумент без изменений. Назовите инструменты в таком порядке: <code>list_logs</code>, <code>summarize_logs</code>, <code>group_lines</code>, <code>timeline</code>, <code>search_logs</code>, <code>read_lines</code>, <code>save_finding</code>.</li>
+<li>Направьте агента сравнить окно симптома со спокойным окном, считать постоянные группы фоном, проверить, согласуются ли источники по времени, для каждого утверждения указывать файл и строку и сказать, чего логи не показывают. Формулировки не должны зависеть от кейсов и содержимого их логов.</li>
+<li>Задайте версию <code>0.4.0</code> и добавьте <code>For a guided investigation, use the triage prompt.</code> к существующим instructions. Обновите тесты instructions и добавьте протокольные тесты для аргументов промпта, отрисованного сообщения и отказов.</li>
+</ul>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Зарегистрируйте промпт на том же объекте FastMCP, которому принадлежат инструменты и хранилище сканирований.</li>
+<li>Используйте простые аннотации <code>str</code>, описанные в docstring, чтобы FastMCP не дописывал к описаниям этих аргументов предложение про JSON-схему.</li>
+<li>Не кладите в промпт ответы по корпусу логов. Описывайте метод расследования и правила работы с доказательствами.</li>
+</ol>
+</div>
+</div></details>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Промпт</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>Add the triage prompt in a new solution/src/logtriage/prompts.py, registered in app.py, as
+4-agents-and-clients/CONTRACT.md section 5 describes it. Its text guides an agent that knows
+nothing about these logs. Set the new version wherever the server declares it and add the
+prompt sentence to the instructions (sections 1 and 8). Update your own tests that check the
+instructions, and add protocol tests for the prompt.
+Run from the repository root: uv run --project solution pytest solution/tests, then
+uv run --project 4-agents-and-clients/checks pytest 4-agents-and-clients/checks
+Checkpoint: every file from test_t1_http.py to test_t3_prompt.py passes; the practice 1 to 3
+checks still pass.</code></pre></div>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>FastMCP сам отклоняет <code>prompts/get</code> без <code>symptom</code> ошибкой JSON-RPC. Он также добавляет к описанию аргумента фразу «Provide a value matching the following JSON schema», если аннотация не является самим классом <code>str</code>: <code>Annotated[str, Field(...)]</code>, <code>str | None</code> и даже простой <code>str</code> в модуле с <code>from __future__ import annotations</code> получают это предложение, а простые аргументы <code>str</code> в модуле без этого импорта, описанные в <code>Args</code> докстринга, — нет.</p>
+<p><strong>Проверка:</strong> проходят все четыре набора, и ваш собственный тоже. Сделайте коммит до задач с хостами.</p>
+<p>Из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>============================== 48 passed in 8.72s ==============================
+============================= 59 passed in 43.04s ==============================
+============================= 209 passed in 24.63s =============================
+============================= 137 passed in 17.99s =============================</code></pre></div>
+<p>Затем из корня репозитория запустите свой набор:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>solution<span class="w"> </span>pytest<span class="w"> </span>solution/tests</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>...
+solution/tests/unit/test_groups.py ................................        [100%]
+
+============================== 95 passed in 3.27s ==============================</code></pre></div>
+<h2 id="5-task-4-two-hosts">5. Задача 4: два хоста</h2>
+<div class="callout callout-default"><p>💡 Цель: подключить HTTP-сервер к двум настоящим хостам агентов, у каждого свой токен.</p>
+</div>
+<p>Когда в хосте зарегистрирован ваш сервер, он подключается и обнаруживает ваши инструменты. Запустите Claude Code с <code>--permission-mode default</code> и через <code>/permissions</code> удалите все сохранённые правила allow, которые покрывают <code>mcp__log-triage__save_finding</code>. Инструменты чтения одобряйте по мере необходимости, а сохранения — по одному, чтобы проверять их аргументы. Codex CLI с настройкой одобрения <code>writes</code> из <code>hosts.md</code> спрашивает перед инструментом, не помеченным как только для чтения.</p>
+<p>Следуйте <code>hosts.md</code>: запустите сервер по HTTP с примерами токенов, зарегистрируйте его в Claude Code с <code>--scope project</code> и в Codex CLI и работайте в каждом хосте так, как сказано в его разделе Use, включая сессию viewer.</p>
+<p>Если в одном из хостов уже есть запись с неверной командой или URL, выполните только подходящую команду удаления, а затем повторите регистрацию из <code>hosts.md</code>:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root. For Claude Code, use the scope containing the wrong entry.</span>
+claude<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>log-triage<span class="w"> </span>--scope<span class="w"> </span><span class="nb">local</span>
+claude<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>log-triage<span class="w"> </span>--scope<span class="w"> </span>project
+codex<span class="w"> </span>mcp<span class="w"> </span>remove<span class="w"> </span>log-triage</code></pre></div>
+<p><code>--scope project</code> оставляет регистрацию Claude Code в <code>.mcp.json</code> в корне репозитория. Команда <code>claude mcp add</code> в <code>hosts.md</code> берёт заголовок <code>Authorization</code> в одинарные кавычки, которые сохраняют <code>${LOG_TRIAGE_TOKEN}</code> как написано. Claude Code читает эту переменную при подключении, а сервер читает <code>LOG_TRIAGE_TOKENS</code>.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Держите токен в переменной окружения. Не вставляйте его значение в файлы проекта.</li>
+<li>Регистрируйте Claude Code в области проекта, чтобы <code>.mcp.json</code> оставался локальным для этого репозитория.</li>
+<li>Сравните списки инструментов analyst и viewer, прежде чем проверять одобрение записи.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p><strong>Проверка:</strong></p>
+<ul>
+<li><code>claude mcp get log-triage</code> показывает область Project и ⏸ Pending approval, пока вы не одобрите регистрацию.</li>
+<li>В Claude Code <code>/mcp</code> показывает <code>log-triage</code> подключённым с семью инструментами. С токеном viewer — шесть, без <code>save_finding</code>.</li>
+<li>В Codex CLI <code>/mcp</code> показывает те же семь инструментов.</li>
+<li>Когда агент хочет выполнить <code>save_finding</code>, хост сначала спрашивает вас.</li>
+</ul>
+<p>Выполните <code>claude mcp get log-triage</code> из корня репозитория после регистрации сервера. До одобрения он выводит:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>log-triage:
+  Scope: Project config (shared via .mcp.json)
+  Status: ⏸ Pending approval (run `claude` to approve)
+  Type: http
+  URL: http://127.0.0.1:8765/mcp
+  Headers:
+    Authorization: Bearer ${LOG_TRIAGE_TOKEN}
+
+To remove this server, run: claude mcp remove log-triage -s project</code></pre></div>
+<h2 id="6-task-5-the-cases">6. Задача 5: кейсы</h2>
+<div class="callout callout-default"><p>💡 Цель: ответить на настоящие вопросы через хост, используя свой промпт, чтобы задать рамки каждому расследованию.</p>
+</div>
+<p>Когда агент ошибается, хост мало что говорит о причине, поэтому менять приходится на стороне сервера: описание инструмента или instructions, которые модель читает перед вызовом.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Начинайте новую сессию хоста для каждой попытки, чтобы единственным изменившимся входом были исправленные описания и instructions.</li>
+<li>Проверяйте процитированные строки источника, прежде чем одобрить <code>save_finding</code>.</li>
+<li>Читайте каждый новый файл отчёта до коммита. У сервера намеренно нет инструмента удаления.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>Два обязательных вопроса, слово в слово, с подсказкой, где искать:</p>
+<blockquote>
+<p>Customers got errors on the invoices page late in the morning of 2026-09-09. Which instance, when, and why?</p>
+</blockquote>
+<p>Где искать: <code>pods</code>.</p>
+<blockquote>
+<p>The API logs say 'DB is locked'. Since when, how often, is it getting worse, and what does the database say?</p>
+</blockquote>
+<p>Где искать: весь корень логов.</p>
+<p>Команда промпта на шаге 2 запускает расследование сразу после отправки, и агент может попытаться сохранить вывод ещё до вашего вопроса: остановить его можно на шаге разрешений хоста. Агент также может записать доказательства прямо в summary, увидеть отказ при сохранении, принять инструмент за сломанный и сохранить тестовые выводы, так что прочитайте всё в <code>reports/</code> перед коммитом: у сервера нет инструмента, который удаляет выводы.</p>
+<p>Для каждого обязательного вопроса из <code>cases.md</code>:</p>
+<ol>
+<li>Начните новую сессию Claude Code, в которой есть только инструменты вашего сервера: <code>claude --tools &quot;&quot;</code>. <code>--tools &quot;&quot;</code> убирает встроенные инструменты Claude Code, но не другие MCP-серверы, которые вы добавили. Если <code>/mcp</code> показывает что-то кроме <code>log-triage</code>, отключите это там для данного проекта, а когда закончите, включите обратно тем же способом.</li>
+<li>Запустите промпт с симптомом в одно слово, местом поиска и, если вопрос называет время, с окном, прочитанным из слов самого вопроса. Для первого вопроса, например, «late in the morning of 2026-09-09»: <code>/mcp__log-triage__triage invoice-errors pods 2026-09-09T09:00 2026-09-09T13:00</code>. Claude Code делит аргументы по пробелам, поэтому симптом из нескольких слов расползётся по другим аргументам.</li>
+<li>Когда агент ответил на промпт, задайте вопрос из <code>cases.md</code> слово в слово.</li>
+<li>Прежде чем доверять ответу, проверьте, что его источники согласуются по времени: сравните даты в первых строках каждого процитированного файла с датой в имени этого файла, а также время одного события в двух разных логах.</li>
+<li>Когда ответ есть, попросите сохранить вывод и прочитайте, что агент собирается записать, прежде чем разрешить.</li>
+<li>Прочитайте новый файл в <code>reports/</code> и сверьте его с разделом «A good finding» в <code>cases.md</code>, а затем отметьте пункты кейсов в <code>CHECKLIST.md</code>.</li>
+</ol>
+<p>Хороший вывод, как его формулирует <code>cases.md</code>:</p>
+<ul>
+<li>Он отвечает на каждую часть вопроса, в порядке вопроса.</li>
+<li>Каждое утверждение опирается на строку, которую вывод цитирует по файлу и номеру строки, и каждая процитированная строка говорит то, что вывод ей приписывает.</li>
+<li>Время указано в UTC, а где два источника расходятся по времени, вывод говорит, какому из них он доверяет и почему.</li>
+<li>Он говорит, чего логи не показывают, а не гадает.</li>
+<li>То, что происходит каждый день, названо один раз как фон, а не как причина.</li>
+</ul>
+<p>Если агент выбрал не тот инструмент, потратил несколько вызовов на поиск местонахождения файла или упустил часть вопроса, улучшите описание инструмента или instructions, перезапустите сервер и спросите снова в новой сессии. Запишите, что вы изменили, в <code>CHECKLIST.md</code>.</p>
+<p>Два необязательных вопроса работают так же. Когда закончите, сделайте коммит <code>reports/</code>.</p>
+<p><strong>Проверка:</strong> по каждому обязательному вопросу в <code>reports/</code> есть вывод, соответствующий «A good finding» из <code>cases.md</code>, а <code>CHECKLIST.md</code> фиксирует все изменения описаний, которые вы сделали.</p>
+<h2 id="7-task-6-what-the-host-shows">7. Задача 6: что показывает хост</h2>
+<div class="callout callout-default"><p>💡 Цель: понаблюдать за сервером через хост и определить одно улучшение на стороне сервера для каждого трудного взаимодействия.</p>
+</div>
+<p>Хост мало что показывает, когда вызов медленный, оборван или отклонён, и каждый из этих случаев указывает на то, чем управляет ваш сервер: сколько длится работа, какой счётчик и какую заметку вы кладёте в ответ и что вызывающему разрешено видеть.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Записывайте результат, который показал хост, отдельно от диагностики в терминале сервера.</li>
+<li>Отличайте отказ в одобрении от отказа сервера. Они происходят на разных границах.</li>
+<li>Если результат обрезан, проверьте, хватило ли счётчика и заметки о постраничной выдаче в ответе, чтобы агент мог продолжить.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>В сессии Claude Code с вашим сервером попробуйте каждое из этого и запишите в <code>CHECKLIST.md</code>, что показал хост и какое одно изменение мог бы сделать сервер:</p>
+<ul>
+<li>Медленный вызов: попросите summary по всему корню логов без окна. Как долго хост ждёт и что показывает в это время?</li>
+<li>Обрезанный ответ: попросите поиск, который находит тысячи строк. Замечает ли агент заметку о постраничной выдаче и просит ли ещё, или отвечает по первой странице?</li>
+<li>Отклонённое сохранение: попросите агента сохранить вывод и откажите в разрешении. Что он делает дальше? Затем начните сессию с токеном viewer и спросите снова: что он говорит, когда <code>save_finding</code> нет?</li>
+<li>Аргументы промпта: запустите промпт с симптомом из нескольких слов в кавычках. Что промпт повторяет в ответ?</li>
+<li>Запрос без токена: начните сессию с неустановленным <code>LOG_TRIAGE_TOKEN</code>. Что показывает хост и что показывает терминал вашего сервера?</li>
+</ul>
+<p><strong>Проверка:</strong> в таблице «What the host showed» в <code>CHECKLIST.md</code> есть строка для каждой попытки.</p>
+<h2 id="8-task-7-verify-with-the-mcp-inspector">8. Задача 7: проверка в MCP Inspector</h2>
+<div class="callout callout-default"><p>💡 Цель: с помощью MCP Inspector проверить проверку токена без агента между клиентом и сервером.</p>
+</div>
+<p>Запуск Inspector напрямую показывает проверки транспорта. У каждого токена свой список инструментов, а запрос без токена получает 401 до запуска любого инструмента.</p>
+<p>Здесь используйте пакет Inspector напрямую. <code>fastmcp dev inspector</code> запускает голую команду <code>fastmcp run</code> без этой HTTP-конфигурации, поэтому не может выбрать современную эру протокола, нужную для проверки метаданных вроде <code>cacheScope</code>.</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подсказки</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ol>
+<li>Держите сервер запущенным в отдельном терминале, прежде чем вызывать CLI Inspector.</li>
+<li>Используйте <code>--stored-auth-only</code> для записи без токена, чтобы Inspector сообщил о 401, а не начал OAuth.</li>
+<li>Сравните два ответа <code>tools/list</code>, прежде чем отрисовывать промпт с симптомом из нескольких слов.</li>
+</ol>
+</div>
+</div></details>
+<div class="md" data-b="Markdown"><p>В <code>inspector.json</code> в папке практики три HTTP-записи для сервера на <code>127.0.0.1:8765</code>: <code>log-triage-http</code> отправляет первый пример токена, <code>log-triage-http-viewer</code> — токен только для чтения, а <code>log-triage-http-no-token</code> не отправляет ничего. В каждой задано <code>&quot;protocolEra&quot;: &quot;modern&quot;</code>, из-за чего Inspector использует протокол <code>2026-07-28</code>. Запустив сервер, как в задаче 1, выполните этот блок из <code>4-agents-and-clients/</code>:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from 4-agents-and-clients/.</span>
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>--cli<span class="w"> </span>--config<span class="w"> </span>inspector.json<span class="w"> </span>--server<span class="w"> </span>log-triage-http<span class="w"> </span>--method<span class="w"> </span>tools/list<span class="w"> </span>--format<span class="w"> </span>json
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>--cli<span class="w"> </span>--config<span class="w"> </span>inspector.json<span class="w"> </span>--server<span class="w"> </span>log-triage-http-viewer<span class="w"> </span>--method<span class="w"> </span>tools/list<span class="w"> </span>--format<span class="w"> </span>json
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>--cli<span class="w"> </span>--config<span class="w"> </span>inspector.json<span class="w"> </span>--server<span class="w"> </span>log-triage-http-no-token<span class="w"> </span>--stored-auth-only<span class="w"> </span>--method<span class="w"> </span>tools/list<span class="w"> </span>--format<span class="w"> </span>json</code></pre></div>
+<p>Первая команда показывает семь инструментов. Вторая — шесть, без <code>save_finding</code>. Третья пишет ответ в stderr, ничего не пишет в stdout, завершается с кодом 3 и выводит:</p>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>{&quot;error&quot;:{&quot;code&quot;:&quot;auth_required&quot;,&quot;message&quot;:&quot;Version negotiation failed: the server requires authorization (HTTP 401)&quot;}}</code></pre></div>
+<p>Без <code>--stored-auth-only</code> Inspector пытается начать вход через OAuth и сообщает, что ему нужен терминал. Уведомления npm — это диагностика CLI, они могут появляться вокруг вывода протокола. Терминал сервера показывает access-строку на каждый запрос, если вы не отключили access-лог uvicorn.</p>
+<p>Затем отрисуйте промпт с симптомом из нескольких слов, который Inspector передаёт целиком. Выполните эту команду из <code>4-agents-and-clients/</code>:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from 4-agents-and-clients/.</span>
+npx<span class="w"> </span>@modelcontextprotocol/inspector<span class="w"> </span>--cli<span class="w"> </span>--config<span class="w"> </span>inspector.json<span class="w"> </span>--server<span class="w"> </span>log-triage-http<span class="w"> </span>--method<span class="w"> </span>prompts/get<span class="w"> </span>--prompt-name<span class="w"> </span>triage<span class="w"> </span>--prompt-args<span class="w"> </span><span class="s2">"symptom=pages time out"</span><span class="w"> </span><span class="nv">path</span><span class="o">=</span>pods<span class="w"> </span>--format<span class="w"> </span>json</code></pre></div>
+<p><strong>Проверка:</strong> запись analyst показывает семь инструментов, запись viewer — шесть, запись без токена сообщает о HTTP 401 без запуска OAuth, а <code>triage</code> повторяет <code>pages time out</code> как одно значение.</p>
+<h2 id="9-check-your-work">9. Проверьте свою работу</h2>
+<p>Из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">4</span>-agents-and-clients/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">3</span>-testing-and-debugging/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">2</span>-state-safety-errors/checks
+uv<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks<span class="w"> </span>pytest<span class="w"> </span><span class="m">1</span>-surface-and-contract/checks</code></pre></div>
+<div class="code"><div class="code-head"><span class="code-lang"></span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code>============================= 48 passed in 14.26s ==============================
+============================= 59 passed in 39.68s ==============================
+============================= 209 passed in 24.63s =============================
+============================= 137 passed in 13.00s =============================</code></pre></div>
+<p>Проверки запускают ваш сервер командой <code>uv run --project solution log-triage</code>, со своим <code>--http 127.0.0.1:&lt;free port&gt;</code>, и своим <code>LOG_TRIAGE_TOKENS</code> и общаются с ним по HTTP, а там, где проверяют коды статуса и заголовки, — сырыми запросами. По одному файлу на каждую задачу сборки:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Файл</th>
+<th>Что проверяет</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_t1_http.py</code></td>
+<td>выход при отсутствии токенов, <code>tools/list</code> и вызов инструмента с токеном, 401 без него, 403 для чужого <code>Origin</code> до проверки токена, локальные origin, более старую ревизию протокола, пустой stdout, одну строку <code>tool=</code> на вызов по HTTP</td>
+</tr>
+<tr>
+<td><code>test_t2_principals.py</code></td>
+<td>сканирование, которое используется со второго токена владельца и отклоняется для другого вызывающего, инструменты вызывающего только для чтения и E13, его собственные сканирования, <code>--read-only</code> поверх токенов, <code>cacheScope</code> <code>private</code> на <code>tools/list</code>, потому что список зависит от вызывающего, лимиты сканирований на вызывающего, вывод, сохранённый по HTTP в <code>triage://reports</code></td>
+</tr>
+<tr>
+<td><code>test_t3_prompt.py</code></td>
+<td>версию, instructions, аргументы промпта и их описания, отрисованный текст (аргументы, порядок инструментов, никаких имён из логов), отказы промпта</td>
+</tr>
+</tbody>
+</table></div>
+<p>Запишите ответы на вопросы из <code>cases.md</code> в <code>CHECKLIST.md</code>. Автоматические проверки покрывают поведение сервера. Чтобы запустить их против другой сборки, задайте <code>LOG_TRIAGE_CMD</code> как её команду в виде JSON-массива. Проверки сами добавляют <code>--http</code> и остальные флаги.</p>
+</div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title">✅ Чек-лист перед отправкой</div><p>Те же пункты есть в <code>4-agents-and-clients/CHECKLIST.md</code>. Отметьте каждый пункт, когда он выполнен, затем сделайте коммит. Там, где пункт просит заметку, напишите её под пунктом.</p>
+<p><strong>Сервер</strong></p>
+<ul><li><label><input type="checkbox" data-key="130f5b03-ef29-4d50-8a96-ed1911a65aa9"><span><code>uv run --project 4-agents-and-clients/checks pytest 4-agents-and-clients/checks</code> проходит из корня репозитория.</span></label></li><li><label><input type="checkbox" data-key="22d5e3ea-fd02-40a3-a531-62ec3a5cb297"><span>Проверки практик 1–3 по-прежнему проходят, как и <code>uv run --project solution pytest solution/tests</code>.</span></label></li><li><label><input type="checkbox" data-key="cc2f8423-9b18-4524-a6c9-24b85344d6ef"><span>Каждая контрольная точка практического урока была выполнена, когда закончился её промпт. Отметьте те, что не были, и что вы с этим сделали.</span></label></li><li><label><input type="checkbox" data-key="6c7e4523-817f-4da4-bc45-5525a7db15af"><span>С <code>--http</code> stdout сервера остаётся пустым, а всё, что он логирует, идёт в stderr.</span></label></li><li><label><input type="checkbox" data-key="45af8dc9-f3a7-4b26-8405-1059db633ed0"><span>Ни один ваш собственный токен не записан ни в одном файле, который вы коммитите. Примеры токенов в <code>tokens.example.env</code> и <code>inspector.json</code> — часть практики и остаются. <code>.mcp.json</code> в коммит не входит.</span></label></li><li><label><input type="checkbox" data-key="1996b35a-aa17-4807-bb26-36f85b5071b5"><span>Ничто в <code>solution/</code> вне <code>tests/</code> и <code>scripts/</code>, включая текст промпта, не называет хост, дату, адрес или сообщение из <code>s3_logs/</code>.</span></label></li><li><label><input type="checkbox" data-key="b3af247f-6c67-4ebc-8451-daef21715777"><span><code>solution/README.md</code> содержит команду запуска по HTTP.</span></label></li></ul></div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Хосты</strong></p>
+<ul><li><label><input type="checkbox" data-key="675365a6-3b03-42fe-b838-70b12efdb6a6"><span>Claude Code показывает семь инструментов вашего сервера, а с токеном viewer — шесть.</span></label></li><li><label><input type="checkbox" data-key="7be06df2-6588-4b84-8dcd-9701040140ca"><span>Второй хост показывает семь инструментов. Укажите, какой хост вы использовали, и любой шаг, который отличался от <code>hosts.md</code>:</span></label></li><li><label><input type="checkbox" data-key="61a0489a-b7c5-4995-9644-8f07d5962730"><span>Каждый хост спросил разрешения перед запуском <code>save_finding</code>.</span></label></li></ul></div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Кейсы</strong></p>
+<p>Для каждого заданного вопроса запишите слово-симптом и аргументы, которые вы передали промпту, а также инструменты, которые вызвал агент.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Вопрос</th>
+<th>Вывод в <code>reports/</code></th>
+<th>Вызовы инструментов</th>
+<th>Отвечены все части</th>
+<th>Проверена каждая процитированная строка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ошибки счетов (обязательный)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Заблокированная база данных (обязательный)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Запуск CI, полный ошибок (необязательный)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Сбои заказов сертификатов (необязательный)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<ul><li><label><input type="checkbox" data-key="cb2ebd40-170b-4e7d-aa20-f215fbe06c2e"><span>У агента не было никаких инструментов, кроме инструментов вашего сервера.</span></label></li><li><label><input type="checkbox" data-key="102af810-e9ec-4897-9378-64228c948431"><span>Каждый обязательный вывод отвечает на каждую часть своего вопроса, и вы проверили в файлах как минимум три из процитированных в нём строк.</span></label></li><li><label><input type="checkbox" data-key="59290993-1811-4f76-b115-ea24f42d2c75"><span>Каждый вывод говорит, чего логи не показывают, и называет то, что происходит каждый день, фоном, если такое есть.</span></label></li><li><label><input type="checkbox" data-key="e5069836-5918-414d-92a0-1da6bdac0d37"><span>Укажите любое изменение описания инструмента или instructions, сделанное после наблюдения за агентом, и стала ли следующая сессия лучше:</span></label></li></ul></div>
+<div class="md" data-b="Markdown"><p><strong>Что показал хост</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Попытка</th>
+<th>Что показал хост</th>
+<th>Что мог бы изменить сервер</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Summary по всему корню логов</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Поиск с тысячами совпадений</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Сохранение, которое вы отклонили</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Сохранение с токеном viewer</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Промпт с симптомом из нескольких слов</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Сессия без токена</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Inspector</strong></p>
+<ul><li><label><input type="checkbox" data-key="ba4a837a-9a77-4135-9e00-c8f00bf6cc30"><span>С первым примером токена <code>tools/list</code> показывает семь инструментов. С токеном viewer — шесть.</span></label></li><li><label><input type="checkbox" data-key="3ed2c057-1760-449f-a233-d562e9566dd1"><span>Без токена Inspector сообщает, что серверу требуется авторизация (HTTP 401).</span></label></li><li><label><input type="checkbox" data-key="1b422970-1ccf-47d6-8f76-8ed71476b7b2"><span><code>prompts/get</code> для <code>triage</code> повторяет симптом из нескольких слов целиком.</span></label></li></ul></div>
+<div class="checklist" data-b="Checklist"><div class="checklist-title"></div><p><strong>Итоги</strong></p>
+<ul><li><label><input type="checkbox" data-key="1b939e22-7446-400f-b7f2-c6d5bdeae8c0"><span>Время, потраченное на это задание, в минутах:</span></label></li><li><label><input type="checkbox" data-key="9c17830a-52b8-4ed4-b271-24c2f206cc18"><span><code>solution/</code>, <code>reports/</code> и эта папка закоммичены.</span></label></li></ul></div>
+<div class="md" data-b="Markdown"><h2 id="10-submit-your-task">10. Отправьте решение</h2>
+<p>Из корня репозитория:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+git<span class="w"> </span>add<span class="w"> </span>solution<span class="w"> </span>reports<span class="w"> </span><span class="m">4</span>-agents-and-clients
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Practice 4: agents and clients"</span></code></pre></div>
+<p><code>.mcp.json</code> в коммит не попадает: его называет <code>.gitignore</code>, и это регистрация вашей машины.</p>
+<p>Отправьте коммит:</p>
+<div class="code"><div class="code-head"><span class="code-lang">bash</span><button class="copy-btn" type="button" aria-label="Копировать код">Копировать</button></div><pre><code><span class="c1"># Run from the repository root.</span>
+git<span class="w"> </span>push</code></pre></div>
+<p>Затем вернитесь к этому уроку и нажмите «Submit».</p>
+</div>
+<details class="cut" data-b="CutContainer"><summary><span class="cut-title">Подробнее</span></summary><div class="cut-body"><div class="md" data-b="Markdown"><ul>
+<li><a href="https://gofastmcp.com/deployment/http" target="_blank" rel="noopener noreferrer" class="ext">Документация FastMCP: HTTP deployment</a>: обслуживание сервера по HTTP через <code>run()</code> или <code>http_app()</code>, режим без состояния с <code>stateless_http=True</code> и включаемая по желанию защита Host и Origin в FastMCP.</li>
+<li><a href="https://gofastmcp.com/servers/auth/token-verification" target="_blank" rel="noopener noreferrer" class="ext">Документация FastMCP: token verification</a>: как сервер проверяет bearer-токены, среди вариантов — <code>StaticTokenVerifier</code> для заранее заданных токенов.</li>
+<li><a href="https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http" target="_blank" rel="noopener noreferrer" class="ext">Спецификация MCP: Streamable HTTP</a>: единственный endpoint, проверка <code>Origin</code> с ответом 403 и аутентификация, которая должна быть у сервера, доступного по URL.</li>
+<li><a href="https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli" target="_blank" rel="noopener noreferrer" class="ext">MCP Inspector CLI</a>: загрузка настроенных HTTP-серверов, вызов <code>tools/list</code> и <code>prompts/get</code> и использование <code>--stored-auth-only</code> для проверки 401.</li>
+<li><a href="https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/protocol-eras" target="_blank" rel="noopener noreferrer" class="ext">Эры протокола MCP Inspector</a>: выбор современного протокола <code>2026-07-28</code>.</li>
+</ul>
+</div>
+</div></details>
+</div><nav class="prev-next" aria-label="Lesson navigation"><a class="pn-card prev" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/14%20-%20Integrating%20with%20Agents%20and%20Clients.html" data-nav="prev"><span class="pn-label">← Назад</span><span class="pn-title">Интеграция с агентами и клиентами</span><span class="pn-sub">Урок 14</span></a><a class="pn-card next" href="../Extending%20AI%20with%20Custom%20MCP%20Servers/16%20-%20Telemetry%20for%20MCP.html" data-nav="next"><span class="pn-label">Далее →</span><span class="pn-title">Телеметрия для MCP</span><span class="pn-sub">Урок 16</span></a></nav></article>
+</main>
+<aside class="toc" aria-label="На этой странице"><div class="toc-inner"><div class="toc-title">На этой странице</div><ol><li class="toc-h2"><a href="#workflow-at-a-glance">👩‍💻 Обзор шагов</a></li><li class="toc-h2"><a href="#1-set-up-your-environment">1. Подготовьте окружение</a></li><li class="toc-h3"><a href="#project-structure">Структура проекта</a></li><li class="toc-h2"><a href="#2-task-1-http-with-tokens">2. Задача 1: HTTP с токенами</a></li><li class="toc-h2"><a href="#3-task-2-callers">3. Задача 2: вызывающие</a></li><li class="toc-h2"><a href="#4-task-3-the-triage-prompt">4. Задача 3: промпт triage</a></li><li class="toc-h2"><a href="#5-task-4-two-hosts">5. Задача 4: два хоста</a></li><li class="toc-h2"><a href="#6-task-5-the-cases">6. Задача 5: кейсы</a></li><li class="toc-h2"><a href="#7-task-6-what-the-host-shows">7. Задача 6: что показывает хост</a></li><li class="toc-h2"><a href="#8-task-7-verify-with-the-mcp-inspector">8. Задача 7: проверка в MCP Inspector</a></li><li class="toc-h2"><a href="#9-check-your-work">9. Проверьте свою работу</a></li><li class="toc-h2"><a href="#10-submit-your-task">10. Отправьте решение</a></li></ol></div></aside>
+</div>
+<div class="scrim" data-act="menu"></div>
+<script src="../assets/tr-status.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>
