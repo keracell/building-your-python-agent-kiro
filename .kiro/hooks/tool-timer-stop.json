@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Tool timer stop",
+      "trigger": "PostToolUse",
+      "description": "Records how long each tool call took in tool-timings.jsonl.",
+      "action": {
+        "type": "command",
+        "command": "node .kiro/hooks/tool-timer.js stop"
+      }
+    }
+  ]
+}
