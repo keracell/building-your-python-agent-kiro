@@ -1,5 +1,31 @@
-# Your server
+# Log Triage server
 
-Your Log Triage server goes in this folder. It starts empty apart from this file: you and your coding agent write all of it, one practice at a time, and it keeps growing here from one practice to the next.
+An MCP server that lets an AI agent investigate a folder of logs. This stage is the skeleton: the server starts over stdio with its name, version and instructions, and registers no tools yet.
 
-Start with [1-surface-and-contract/README.md](../1-surface-and-contract/README.md). Each practice's README shows what this folder holds once that practice is done.
+## Install
+Run from the repository root. You need Python 3.13 and uv.
+
+```bash
+uv sync --project solution
+```
+
+## Run
+```bash
+uv run --project solution log-triage --root s3_logs
+```
+
+The server speaks MCP over stdin and stdout, so it prints nothing and waits for input. Stop it with Ctrl+C. Diagnostics go to stderr.
+
+| Flag | Meaning | Default |
+|---|---|---|
+| `--root DIR` | The log root. Required | none |
+| `--reports DIR` | Where findings will be written | `reports` in the working directory |
+| `--read-only` | Do not register the write tool | off |
+
+If `--root` is missing or not a readable folder, the server prints `log root "<DIR>" is not a readable folder` on stderr and exits with code 2.
+
+## Check
+```bash
+uv run --project 1-surface-and-contract/checks pytest 1-surface-and-contract/checks
+```
+At this stage `test_t2_server.py` passes and the later files still fail.
