@@ -34,3 +34,24 @@ def path_outside(path: str) -> str:
 def path_missing(path: str) -> str:
     """E2: the path passes screening and does not exist."""
     return f'path "{path}" does not exist under the log root. Call list_logs to see what is there.'
+
+
+def bad_time(field: str) -> str:
+    """E3: since or until does not read as a date or a time."""
+    return f"{field} must be a date like 2026-01-31 or a time like 2026-01-31T14:00:00Z."
+
+
+UNTIL_NOT_LATER = "until must be later than since."  # E4
+
+
+def bad_pattern(field: str) -> str:
+    """E5: the regular expression does not compile."""
+    return (
+        f"{field} is not a valid regular expression. "
+        "Escape special characters such as ( [ . * with a backslash, or search for a plain word."
+    )
+
+
+def finding_exists(name: str) -> str:
+    """E9: a finding with that name is already saved."""
+    return f'a finding named "{name}" already exists. Choose a different title.'

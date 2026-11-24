@@ -11,9 +11,13 @@ from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 from pydantic import Field
 
+from .. import errors
 from ..logs import reader
+from .. import errors
 from ..logs.formats import LEVELS
+from .. import errors
 from ..logs.groups import group_id, pattern_of
+from .. import errors
 from ..logs.times import format_time, in_window, parse_instant
 from ..paths import LogRoot
 from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore, ScannedFile, StoredGroup
@@ -48,8 +52,16 @@ def parse_bound(name: str, value: str | None) -> datetime | None:
         return None
     moment = parse_instant(value)
     if moment is None:
-        raise ToolError(f"{name} {value!r} is not a time: use YYYY-MM-DD or YYYY-MM-DDTHH:MM[:SS][Z|+HH:MM]")
+        raise ToolError(errors.bad_time(name))
     return moment
+
+
+def parse_window(since: str | None, until: str | None) -> tuple[datetime | None, datetime | None]:
+    """The window ends, or E3 (since is reported first) and E4 when until is not later than since."""
+    start, end = parse_bound("since", since), parse_bound("until", until)
+    if start is not None and end is not None and end <= start:
+        raise ToolError(errors.UNTIL_NOT_LATER)
+    return start, end
 
 
 def show(moment: datetime | None) -> str | None:
@@ -65,7 +77,7 @@ def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
         limit: Annotated[int, Field(ge=1, le=100, description="Most groups to return.")] = 20,
     ) -> SummarizeResult:
         location = root.resolve(path)
-        start, end = parse_bound("since", since), parse_bound("until", until)
+        start, end = parse_window(since, until)
         floor = 0 if min_level == "any" else LEVELS.index(min_level)
 
         files_scanned = lines_scanned = lines_in_window = 0

@@ -9,12 +9,13 @@ from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 from pydantic import Field
 
+from .. import errors
 from ..logs import reader
 from ..logs.formats import LEVELS
 from ..logs.times import in_window
 from ..paths import LogRoot
 from ..models import MinLevel, SearchMatch, SearchResult
-from .summary import parse_bound, show
+from .summary import parse_window, show
 
 DESCRIPTION = (
     "Find the log lines that match a regular expression, searched anywhere in the raw line, "
@@ -36,11 +37,11 @@ def register(mcp: FastMCP, root: LogRoot) -> None:
         offset: Annotated[int, Field(ge=0, description="Matches to skip, for the next page.")] = 0,
     ) -> SearchResult:
         location = root.resolve(path)
+        start, end = parse_window(since, until)
         try:
             expression = re.compile(pattern, re.ASCII)
-        except re.error as exc:
-            raise ToolError(f"pattern is not a valid regular expression: {exc}") from None
-        start, end = parse_bound("since", since), parse_bound("until", until)
+        except re.error:
+            raise ToolError(errors.bad_pattern("pattern")) from None
         floor = 0 if min_level == "any" else LEVELS.index(min_level)
 
         matches: list[SearchMatch] = []

@@ -8,21 +8,27 @@ from datetime import datetime
 from typing import Annotated
 
 from fastmcp import FastMCP
-from pydantic import BaseModel, Field
+from fastmcp.exceptions import ToolError
+from pydantic import BaseModel, ConfigDict, Field
 
+from .. import errors
+from ..logs import reader
 from ..logs.times import UTC, format_time
 from ..models import SaveFindingResult, Severity
+from ..paths import LogRoot
 
 DESCRIPTION = (
     "Save a finding as a markdown report with its severity, summary and the log lines that prove "
-    "it. Cite a file and line for every piece of evidence. Saving a title that already exists "
-    "overwrites the earlier report."
+    "it. Cite a file and line for every piece of evidence. It only creates: a title whose name is "
+    "already taken is refused and the earlier report stays unchanged."
 )
 
 MAX_SLUG = 60
 
 
 class EvidenceItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     file: Annotated[str, Field(max_length=500, description="Log file, relative to the log root.")]
     line: Annotated[int, Field(ge=1, description="Line number in that file, from 1.")]
     note: Annotated[str, Field(min_length=1, max_length=300, description="What this line shows.")]
@@ -52,7 +58,18 @@ def render(title: str, severity: str, saved: str, summary: str, evidence: list[E
     return "\n".join(lines) + "\n"
 
 
-def register(mcp: FastMCP, reports: str) -> None:
+def check_evidence(root: LogRoot, item: EvidenceItem) -> None:
+    """The file is screened like a path (E1, E2), must be a file (E10), and must have the line (E8)."""
+    location = root.resolve(item.file)
+    name = root.relative(location)
+    if os.path.isdir(location):
+        raise ToolError(errors.is_a_folder(name))
+    total = sum(1 for _ in reader.iter_lines(location))
+    if item.line > total:
+        raise ToolError(errors.line_past_end(item.line, name, total))
+
+
+def register(mcp: FastMCP, reports: str, root: LogRoot) -> None:
     def save_finding(
         title: Annotated[str, Field(min_length=3, max_length=120, description="Short name of the finding.")],
         severity: Annotated[Severity, Field(description="How serious the finding is.")],
@@ -61,10 +78,18 @@ def register(mcp: FastMCP, reports: str) -> None:
     ) -> SaveFindingResult:
         name = slugify(title)
         saved = format_time(datetime.now(UTC))
-        os.makedirs(reports, exist_ok=True)
         filename = f"{name}.md"
-        with open(os.path.join(reports, filename), "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(render(title, severity, saved, summary, evidence))
+        target = os.path.join(reports, filename)
+        if os.path.lexists(target):
+            raise ToolError(errors.finding_exists(name))
+        for item in evidence:
+            check_evidence(root, item)
+        os.makedirs(reports, exist_ok=True)
+        try:
+            with open(target, "x", encoding="utf-8", newline="\n") as handle:
+                handle.write(render(title, severity, saved, summary, evidence))
+        except FileExistsError:
+            raise ToolError(errors.finding_exists(name)) from None
         return SaveFindingResult(name=name, path=filename, created=saved)
 
     mcp.tool(
@@ -74,7 +99,7 @@ def register(mcp: FastMCP, reports: str) -> None:
         annotations={
             "title": "Save a finding",
             "readOnlyHint": False,
-            "destructiveHint": True,
+            "destructiveHint": False,
             "idempotentHint": False,
             "openWorldHint": False,
         },

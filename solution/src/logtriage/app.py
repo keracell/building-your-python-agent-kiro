@@ -43,6 +43,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     mcp = FastMCP(
         name=NAME, version=VERSION, instructions=instructions_for(scan_ttl),
         cache_ttl=FRESH_SECONDS, cache_scope="private",
+        mask_error_details=True,
     )
     store = ScanStore(scan_ttl)
     root = LogRoot(root)  # resolved once, here
@@ -52,5 +53,5 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     context.register(mcp, root, store)
     resources.register(mcp, reports, store)
     if not read_only:
-        findings.register(mcp, reports)
+        findings.register(mcp, reports, root)
     return mcp
