@@ -45,3 +45,10 @@ uv run --project solution pytest solution/tests/unit
 ```
 
 The unit tests call the reader and the grouping rules directly, on small hand-built files, with no MCP in between.
+
+## Probe
+`scripts/probe.py` is a scripted client that behaves like a careless host. It starts the server over stdio (with `--scan-ttl 1` and a temporary reports folder), sends five requests on one session and prints one line per step. It exits 0 only when every step got the answer `3-testing-and-debugging/probe-expected.md` names, and 1 otherwise.
+
+```bash
+uv run --project solution python solution/scripts/probe.py --root s3_logs
+```
