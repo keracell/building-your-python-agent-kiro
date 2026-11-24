@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from fastmcp import FastMCP
+from fastmcp.server.auth import AuthProvider
 
-from . import resources
+from . import prompts, resources
 from .log_setup import CallLogMiddleware
 from .paths import LogRoot
 from .scans import ScanStore
@@ -12,7 +13,7 @@ from .tools import context, files, findings, search, summary, timeline
 
 NAME = "log-triage"
 FRESH_SECONDS = 30  # the freshness pair of the contract: ttlMs 30000, cacheScope "private"
-VERSION = "0.3.0"
+VERSION = "0.5.0"
 
 INSTRUCTIONS = (
     "Log Triage reads log files under one folder. Start with list_logs to see what is there. "
@@ -36,16 +37,21 @@ def instructions_for(scan_ttl: int) -> str:
         f"{INSTRUCTIONS} summarize_logs returns a scan_id that works for {lifetime_text(scan_ttl)}; "
         "pass it to group_lines to read one group's lines without scanning again. "
         "Use read_lines for the lines around one line. Saved findings are listed at triage://reports. "
-        "Use timeline with a scan_id to see how often a pattern occurs over time, and how a number in those lines moves."
+        "Use timeline with a scan_id to see how often a pattern occurs over time, and how a number in those lines moves. "
+        "For a guided investigation, use the triage prompt."
     )
 
 
-def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900) -> FastMCP:
+def create_server(
+    root: str, reports: str, read_only: bool, scan_ttl: int = 900,
+    *, auth: AuthProvider | None = None,
+) -> FastMCP:
     """Build the server for a log root and register its tools; the write tool only when not read-only."""
     mcp = FastMCP(
         name=NAME, version=VERSION, instructions=instructions_for(scan_ttl),
         cache_ttl=FRESH_SECONDS, cache_scope="private",
         mask_error_details=True,
+        auth=auth,
     )
     mcp.add_middleware(CallLogMiddleware())
     store = ScanStore(scan_ttl)
@@ -56,6 +62,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     context.register(mcp, root, store)
     timeline.register(mcp, root, store)
     resources.register(mcp, reports, store)
+    prompts.register(mcp)
     if not read_only:
         findings.register(mcp, reports, root)
     return mcp

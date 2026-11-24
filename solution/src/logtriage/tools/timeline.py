@@ -16,7 +16,8 @@ from ..logs import reader
 from ..logs.times import format_time, in_window, parse_instant
 from ..models import TimelineBucket, TimelineResult
 from ..paths import LogRoot
-from ..scans import LOCAL_CALLER, ScanStore
+from ..auth import current_caller
+from ..scans import ScanStore
 
 DESCRIPTION = (
     "Count the lines of a scan's files by time bucket, optionally only those matching a pattern, and "
@@ -67,7 +68,7 @@ def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
         bucket_minutes: Annotated[int, Field(ge=1, le=1440, description="Width of a bucket in minutes.")] = 60,
         value_pattern: Annotated[str | None, Field(min_length=1, max_length=200, description="A regular expression with exactly one capture group, for a number in the lines.")] = None,
     ) -> TimelineResult:
-        scan = store.get(LOCAL_CALLER, scan_id)
+        scan = store.get(current_caller(), scan_id)
         if scan is None:
             raise ToolError(errors.scan_unknown(scan_id))
         expression = compile_pattern("pattern", pattern)

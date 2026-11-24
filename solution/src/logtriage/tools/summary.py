@@ -20,7 +20,8 @@ from ..logs.groups import group_id, pattern_of
 from .. import errors
 from ..logs.times import format_time, in_window, parse_instant
 from ..paths import LogRoot
-from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore, ScannedFile, StoredGroup
+from ..auth import current_caller
+from ..scans import MAX_LINES_PER_GROUP, ScanStore, ScannedFile, StoredGroup
 from ..models import ByLevel, Example, Group, MinLevel, SkippedFile, SummarizeResult
 
 DESCRIPTION = (
@@ -161,7 +162,7 @@ def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
         )
         request = {"path": result.path, "since": result.since, "until": result.until, "min_level": min_level}
         kept = {gid: StoredGroup(g.pattern, g.count, g.positions) for gid, g in ordered}
-        store.add(LOCAL_CALLER, result.scan_id, request, result, scanned, kept)
+        store.add(current_caller(), result.scan_id, request, result, scanned, kept)
         return result
 
     mcp.tool(

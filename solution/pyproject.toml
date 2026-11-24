@@ -1,10 +1,12 @@
 [project]
 name = "log-triage"
-version = "0.3.0"
+version = "0.5.0"
 description = "An MCP server for investigating logs."
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "fastmcp==4.0.3",
+    "opentelemetry-sdk==1.44.0",
+    "opentelemetry-exporter-otlp-proto-http==1.44.0",
 ]
 
 [project.scripts]

@@ -42,6 +42,7 @@ def bad_time(field: str) -> str:
 
 
 UNTIL_NOT_LATER = "until must be later than since."  # E4
+FINDING_NOT_AVAILABLE = "save_finding is not available to this caller."  # E13
 
 
 def bad_pattern(field: str) -> str:

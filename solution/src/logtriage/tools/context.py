@@ -14,7 +14,8 @@ from ..logs import reader
 from ..logs.times import format_time
 from ..models import GroupLine, GroupLinesResult, NumberedLine, ReadLinesResult
 from ..paths import LogRoot
-from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore
+from ..auth import current_caller
+from ..scans import MAX_LINES_PER_GROUP, ScanStore
 
 DESCRIPTION = (
     "Page through the lines of one message group from a summarize_logs scan, using its scan_id and "
@@ -36,7 +37,7 @@ def register(mcp: FastMCP, root: LogRoot, store: ScanStore) -> None:
         limit: Annotated[int, Field(ge=1, le=200, description="Most lines to return.")] = 50,
         offset: Annotated[int, Field(ge=0, description="Lines to skip, for the next page.")] = 0,
     ) -> GroupLinesResult:
-        scan = store.get(LOCAL_CALLER, scan_id)
+        scan = store.get(current_caller(), scan_id)
         if scan is None:
             raise ToolError(errors.scan_unknown(scan_id))
         group = scan.groups.get(group_id)

@@ -9,9 +9,11 @@ from typing import Annotated
 
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
+from fastmcp.server.middleware import Middleware
 from pydantic import BaseModel, ConfigDict, Field
 
 from .. import errors
+from ..auth import caller_is_read_only
 from ..logs import reader
 from ..logs.times import UTC, format_time
 from ..models import SaveFindingResult, Severity
@@ -69,7 +71,24 @@ def check_evidence(root: LogRoot, item: EvidenceItem) -> None:
         raise ToolError(errors.line_past_end(item.line, name, total))
 
 
+class FindingAccessMiddleware(Middleware):
+    """Hide the write tool and refuse direct writes by read-only callers."""
+
+    async def on_list_tools(self, context, call_next):
+        tools = await call_next(context)
+        if caller_is_read_only():
+            return [tool for tool in tools if tool.name != "save_finding"]
+        return tools
+
+    async def on_call_tool(self, context, call_next):
+        if context.message.name == "save_finding" and caller_is_read_only():
+            raise ToolError(errors.FINDING_NOT_AVAILABLE)
+        return await call_next(context)
+
+
 def register(mcp: FastMCP, reports: str, root: LogRoot) -> None:
+    mcp.add_middleware(FindingAccessMiddleware())
+
     def save_finding(
         title: Annotated[str, Field(min_length=3, max_length=120, description="Short name of the finding.")],
         severity: Annotated[Severity, Field(description="How serious the finding is.")],

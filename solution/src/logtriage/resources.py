@@ -11,7 +11,8 @@ from fastmcp import FastMCP
 from fastmcp.exceptions import MCPError
 
 from .logs.formats import FORMAT_NAMES
-from .scans import LOCAL_CALLER, ScanStore
+from .auth import current_caller
+from .scans import ScanStore
 
 # What each format's rules can give, from critical down to debug, `unknown` last (docs/log-formats.md).
 LEVELS_OF = {
@@ -127,7 +128,7 @@ def register(mcp: FastMCP, reports: str, store: ScanStore) -> None:
 
     @mcp.resource("triage://scans/{scan_id}", mime_type="application/json", description="The summary of one stored scan.")
     def scan(scan_id: str) -> str:
-        stored = store.get(LOCAL_CALLER, scan_id)
+        stored = store.get(current_caller(), scan_id)
         if stored is None:
             raise _not_found(f"triage://scans/{scan_id}")
         return stored.summary.model_dump_json()
