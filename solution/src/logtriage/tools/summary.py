@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 from fastmcp import FastMCP
@@ -15,6 +15,7 @@ from ..logs import reader
 from ..logs.formats import LEVELS, UNKNOWN_FORMAT
 from ..logs.groups import group_id, pattern_of
 from ..logs.times import format_time, in_window, parse_instant
+from ..scans import LOCAL_CALLER, ScanStore
 from ..models import ByLevel, Example, Group, MinLevel, SkippedFile, SummarizeResult
 
 DESCRIPTION = (
@@ -53,7 +54,7 @@ def show(moment: datetime | None) -> str | None:
     return None if moment is None else format_time(moment)
 
 
-def register(mcp: FastMCP, root: str) -> None:
+def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
     def summarize_logs(
         path: Annotated[str, Field(max_length=500, description="File or folder, relative to the log root.")] = ".",
         since: Annotated[str | None, Field(max_length=40, description="Window start, inclusive, UTC unless it has an offset.")] = None,
@@ -132,7 +133,9 @@ def register(mcp: FastMCP, root: str) -> None:
                 f"Showing {len(page)} of {total} groups. "
                 "Raise limit (up to 100) or narrow the path or the window."
             )
-        return SummarizeResult(
+        expires_at = datetime.now(UTC) + timedelta(seconds=store.ttl_seconds)
+        result = SummarizeResult(
+            scan_id=store.new_id(), expires_at=format_time(expires_at),
             path=reader.relative_path(root, location),
             since=show(start), until=show(end), min_level=min_level,
             files_scanned=files_scanned, skipped=skipped,
@@ -141,6 +144,9 @@ def register(mcp: FastMCP, root: str) -> None:
             by_level=ByLevel(**by_level),
             groups=page, total_groups=total, shown=len(page), note=note,
         )
+        request = {"path": result.path, "since": result.since, "until": result.until, "min_level": min_level}
+        store.add(LOCAL_CALLER, result.scan_id, request, result)
+        return result
 
     mcp.tool(
         summarize_logs,

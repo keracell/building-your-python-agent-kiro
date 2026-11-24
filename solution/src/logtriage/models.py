@@ -64,6 +64,8 @@ class Group(BaseModel):
 
 
 class SummarizeResult(BaseModel):
+    scan_id: str
+    expires_at: str
     path: str
     since: str | None
     until: str | None

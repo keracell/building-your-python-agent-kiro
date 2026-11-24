@@ -18,7 +18,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="where save_finding writes (default: reports in the working directory)",
     )
     parser.add_argument("--read-only", action="store_true", help="do not register save_finding")
-    return parser.parse_args(argv)
+    parser.add_argument(
+        "--scan-ttl", type=int, default=900, metavar="SECONDS",
+        help="how long a scan_id works, 1 or more (default: 900)",
+    )
+    args = parser.parse_args(argv)
+    if args.scan_ttl < 1:
+        parser.error("--scan-ttl must be 1 or more")
+    return args
 
 
 def root_is_readable(root: str) -> bool:
@@ -31,7 +38,7 @@ def main(argv: list[str] | None = None) -> None:
     if not root_is_readable(args.root):
         print(f'log root "{args.root}" is not a readable folder', file=sys.stderr)
         sys.exit(2)
-    create_server(args.root, args.reports, args.read_only).run(transport="stdio", show_banner=False)
+    create_server(args.root, args.reports, args.read_only, args.scan_ttl).run(transport="stdio", show_banner=False)
 
 
 if __name__ == "__main__":

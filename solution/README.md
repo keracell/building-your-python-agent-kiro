@@ -21,6 +21,7 @@ The server speaks MCP over stdin and stdout, so it prints nothing and waits for 
 | `--root DIR` | The log root. Required | none |
 | `--reports DIR` | Where findings will be written | `reports` in the working directory |
 | `--read-only` | Do not register the write tool | off |
+| `--scan-ttl SECONDS` | How long a `scan_id` from `summarize_logs` works, 1 or more | `900` |
 
 If `--root` is missing or not a readable folder, the server prints `log root "<DIR>" is not a readable folder` on stderr and exits with code 2.
 
