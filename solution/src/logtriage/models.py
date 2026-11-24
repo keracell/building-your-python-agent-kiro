@@ -124,3 +124,16 @@ class GroupLinesResult(BaseModel):
     total: int
     shown: int
     note: str
+
+
+class NumberedLine(BaseModel):
+    line: int
+    text: str
+
+
+class ReadLinesResult(BaseModel):
+    file: str
+    start: int
+    end: int
+    total_lines: int
+    lines: list[NumberedLine]

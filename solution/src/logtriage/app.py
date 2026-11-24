@@ -42,7 +42,7 @@ def create_server(root: str, reports: str, read_only: bool, scan_ttl: int = 900)
     files.register(mcp, root)
     summary.register(mcp, root, store)
     search.register(mcp, root)
-    context.register(mcp, store)
+    context.register(mcp, root, store)
     if not read_only:
         findings.register(mcp, reports)
     return mcp

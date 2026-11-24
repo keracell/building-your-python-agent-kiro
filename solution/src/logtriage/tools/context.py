@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Annotated
 
 from fastmcp import FastMCP
@@ -11,7 +12,7 @@ from pydantic import Field
 from .. import errors
 from ..logs import reader
 from ..logs.times import format_time
-from ..models import GroupLine, GroupLinesResult
+from ..models import GroupLine, GroupLinesResult, NumberedLine, ReadLinesResult
 from ..scans import LOCAL_CALLER, MAX_LINES_PER_GROUP, ScanStore
 
 DESCRIPTION = (
@@ -19,10 +20,15 @@ DESCRIPTION = (
     "a group_id from that scan, without scanning the logs again."
 )
 
+READ_DESCRIPTION = (
+    "Read the lines around one line of one file under the log root, for context: a few lines before "
+    "and after it, clipped to the start and the end of the file."
+)
+
 MAX_TEXT = 500
 
 
-def register(mcp: FastMCP, store: ScanStore) -> None:
+def register(mcp: FastMCP, root: str, store: ScanStore) -> None:
     def group_lines(
         scan_id: Annotated[str, Field(pattern=r"^s_[0-9a-f]{16}$", description="The scan_id from summarize_logs.")],
         group_id: Annotated[str, Field(pattern=r"^[0-9a-f]{12}$", description="A group_id from that scan's groups.")],
@@ -73,4 +79,39 @@ def register(mcp: FastMCP, store: ScanStore) -> None:
         title="Show a group's lines",
         description=DESCRIPTION,
         annotations={"title": "Show a group's lines", "readOnlyHint": True, "openWorldHint": False},
+    )
+
+    def read_lines(
+        path: Annotated[str, Field(max_length=500, description="A file, relative to the log root.")],
+        line: Annotated[int, Field(ge=1, description="The line to read around, counted from 1.")],
+        before: Annotated[int, Field(ge=0, le=50, description="Lines to show before it.")] = 5,
+        after: Annotated[int, Field(ge=0, le=200, description="Lines to show after it.")] = 20,
+    ) -> ReadLinesResult:
+        try:
+            location = reader.resolve_path(root, path)
+        except reader.PathRefused as exc:
+            raise ToolError(str(exc)) from None
+        if not os.path.exists(location):
+            raise ToolError(f"path {path!r} does not exist under the log root")
+        name = reader.relative_path(root, location)
+        if os.path.isdir(location):
+            raise ToolError(errors.is_a_folder(name))
+
+        start, end = max(1, line - before), line + after
+        window: list[NumberedLine] = []
+        total = 0
+        for total, text in enumerate(reader.iter_lines(location), start=1):
+            if start <= total <= end:
+                window.append(NumberedLine(line=total, text=text[:MAX_TEXT]))
+        if line > total:
+            raise ToolError(errors.line_past_end(line, name, total))
+        return ReadLinesResult(
+            file=name, start=start, end=min(end, total), total_lines=total, lines=window,
+        )
+
+    mcp.tool(
+        read_lines,
+        title="Read lines around a line",
+        description=READ_DESCRIPTION,
+        annotations={"title": "Read lines around a line", "readOnlyHint": True, "openWorldHint": False},
     )
